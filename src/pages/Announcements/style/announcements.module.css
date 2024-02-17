@@ -1,0 +1,19 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.announcements {
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  /* my announcements are shrinked too much, why is that copilot?  */
+  /* flex-basis: auto; */
+  /* min-width: 400px; */
+  /* flex: 1; */
+  /* flex-direction: column; */
+  /* flex-grow: 1; */
+  /* align-content: center; */
+  /* margin: 0 auto; */
+}
