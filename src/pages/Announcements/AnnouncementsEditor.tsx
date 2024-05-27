@@ -1,43 +1,43 @@
-import { RichTextEditor, Link } from '@mantine/tiptap';
-import { useRichTextEditorContext } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
-import Highlight from '@tiptap/extension-highlight';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import Superscript from '@tiptap/extension-superscript';
-import SubScript from '@tiptap/extension-subscript';
-import { Button, Modal } from '@mantine/core';
-import { editAnnouncement, makeAnnouncement } from '../../data/api';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
-import { modals } from '@mantine/modals';
-import { useEffect } from 'react';
+import { RichTextEditor, Link } from "@mantine/tiptap";
+import { useRichTextEditorContext } from "@mantine/tiptap";
+import { useEditor } from "@tiptap/react";
+import Highlight from "@tiptap/extension-highlight";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
+import Superscript from "@tiptap/extension-superscript";
+import SubScript from "@tiptap/extension-subscript";
+import { Button, Modal } from "@mantine/core";
+import { editAnnouncement, makeAnnouncement } from "../../data/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { modals } from "@mantine/modals";
+import { useEffect } from "react";
 
-let content = '';
+let content = "";
 
 export function AnnouncementsEditor(props: any) {
   if (props.edit == true) {
     content = props.description;
-  } else content = '';
+  } else content = "";
   const queryClient = useQueryClient();
   const { mutate: make } = useMutation({
     mutationFn: makeAnnouncement,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      queryClient.invalidateQueries({ queryKey: ["announcements"] });
       notifications.show({
-        title: 'Announcement Made',
-        message: 'Announcement has been made',
+        title: "Announcement Made",
+        message: "Announcement has been made",
         autoClose: 3000,
       });
     },
     onError: (error) => {
       notifications.show({
-        title: 'Error',
-        message: 'Could not make announcement',
+        title: "Error",
+        message: "Could not make announcement",
         autoClose: 3000,
-        color: 'red',
+        color: "red",
       });
     },
   });
@@ -45,19 +45,19 @@ export function AnnouncementsEditor(props: any) {
   const { mutate: edit } = useMutation({
     mutationFn: editAnnouncement,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      queryClient.invalidateQueries({ queryKey: ["announcements"] });
       notifications.show({
-        title: 'Announcement Edited',
-        message: 'Announcement has been edited',
+        title: "Announcement Edited",
+        message: "Announcement has been edited",
         autoClose: 3000,
       });
     },
     onError: (error) => {
       notifications.show({
-        title: 'Error',
-        message: 'Could not edit announcement',
+        title: "Error",
+        message: "Could not edit announcement",
         autoClose: 3000,
-        color: 'red',
+        color: "red",
       });
     },
   });
@@ -72,7 +72,7 @@ export function AnnouncementsEditor(props: any) {
       Superscript,
       SubScript,
       Highlight,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
     content,
   });
@@ -133,12 +133,12 @@ export function AnnouncementsEditor(props: any) {
       </RichTextEditor>
       <Button
         onClick={() => {
-          if (editorExtensions?.getText() === '') {
+          if (editorExtensions?.getText() === "") {
             notifications.show({
-              title: 'Empty Announcement',
-              message: 'Announcement cannot be empty',
+              title: "Empty Announcement",
+              message: "Announcement cannot be empty",
               autoClose: 3000,
-              color: 'red',
+              color: "red",
             });
           } else {
             if (props.edit) {
@@ -155,10 +155,10 @@ export function AnnouncementsEditor(props: any) {
             // props.closeModal();
           }
         }}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         mt={10}
       >
-        {props.edit ? 'Edit Announcement' : 'Make Announcement'}
+        {props.edit ? "Edit Announcement" : "Make Announcement"}
       </Button>
     </>
   );

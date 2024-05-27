@@ -5,30 +5,42 @@ import {
   Modal,
   Popover,
   Text,
-} from '@mantine/core';
-import { IconAdjustments } from '@tabler/icons-react';
-import { ManageAnnouncement } from './ManageAnnouncement';
-import { useContext, useState } from 'react';
-import { notifications } from '@mantine/notifications';
-import { removeAnnouncement } from '../../data/api';
-import { modals } from '@mantine/modals';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useDisclosure } from '@mantine/hooks';
-import { AnnouncementsEditor } from './AnnouncementsEditor';
-import { UserContext } from '../../utils/UserContext';
-import { TypographyStylesProvider } from '@mantine/core';
+} from "@mantine/core";
+import { IconAdjustments } from "@tabler/icons-react";
+import { ManageAnnouncement } from "./ManageAnnouncement";
+import { useContext, useState } from "react";
+import { notifications } from "@mantine/notifications";
+import { removeAnnouncement } from "../../data/api";
+import { modals } from "@mantine/modals";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDisclosure } from "@mantine/hooks";
+import { AnnouncementsEditor } from "./AnnouncementsEditor";
+import { UserContext } from "../../utils/UserContext";
+import { TypographyStylesProvider } from "@mantine/core";
 
-export function Announcement(props: any) {
-  // const [openedEditor, { open: openEditor, close: closeEditor }] =
-  useDisclosure(false);
+type AnnouncementProps = {
+  isEditor: boolean;
+  key: number;
+  id: string;
+  date: string;
+  description: string;
+};
+
+export function Announcement({
+  isEditor,
+  key,
+  id,
+  date,
+  description,
+}: AnnouncementProps) {
   const user = useContext(UserContext);
   console.log(user);
-  console.log('from user context: announcement1');
+  console.log("from user context: announcement1");
   const queryClient = useQueryClient();
 
   const openDeleteAnnoundementModal = () =>
     modals.openConfirmModal({
-      title: 'Delete Announcement',
+      title: "Delete Announcement",
       centered: true,
       children: (
         <Text size="sm">
@@ -36,31 +48,31 @@ export function Announcement(props: any) {
           destructive and you will cannot retrieve removed announcements back.
         </Text>
       ),
-      labels: { confirm: 'Delete announcement', cancel: "No don't delete it" },
-      confirmProps: { color: 'red' },
-      onConfirm: () => remove(props.id),
+      labels: { confirm: "Delete announcement", cancel: "No don't delete it" },
+      confirmProps: { color: "red" },
+      onConfirm: () => remove(id),
     });
 
   const { mutate: remove } = useMutation({
     mutationFn: removeAnnouncement,
     onSuccess: () => {
       notifications.show({
-        title: 'Deleted Successfully',
-        message: 'Announcement has been deleted',
+        title: "Deleted Successfully",
+        message: "Announcement has been deleted",
         autoClose: 3000,
       });
-      queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      queryClient.invalidateQueries({ queryKey: ["announcements"] });
     },
   });
   const [popOpened, setpopOpened] = useState(false);
   return (
     <Accordion.Item
-      style={{ position: 'relative' }}
+      style={{ position: "relative" }}
       // mx={200}
-      key={props.id}
-      value={props.id}
+      key={id}
+      value={id}
     >
-      {user && (
+      {isEditor && (
         <Popover
           opened={popOpened}
           onChange={setpopOpened}
@@ -76,30 +88,29 @@ export function Announcement(props: any) {
               onClick={() => setpopOpened((o) => !o)}
               variant="light"
               aria-label="Settings"
-              style={{ position: 'absolute', top: '10px', right: '50px' }}
+              style={{ position: "absolute", top: "10px", right: "50px" }}
             >
               <IconAdjustments
-                style={{ width: '70%', height: '70%' }}
+                style={{ width: "70%", height: "70%" }}
                 stroke={1.5}
               />
             </ActionIcon>
           </Popover.Target>
-          <Popover.Dropdown style={{ padding: '0px' }}>
+          <Popover.Dropdown style={{ padding: "0px" }}>
             <Button
-              style={{ width: '100px', zIndex: '100' }}
+              style={{ width: "100px", zIndex: "100" }}
               radius="xs"
               variant="light"
               onClick={() => {
-                console.log(props);
                 setpopOpened(false);
                 modals.openContextModal({
-                  modal: 'editor',
-                  title: 'Announcements Mangager',
-                  size: '100%',
+                  modal: "editor",
+                  title: "Announcements Mangager",
+                  size: "100%",
                   innerProps: {
                     edit: true,
-                    description: props.description,
-                    id: props.id,
+                    description: description,
+                    id: id,
                   },
                 });
               }}
@@ -107,7 +118,7 @@ export function Announcement(props: any) {
               Edit
             </Button>
             <Button
-              style={{ width: '100px' }}
+              style={{ width: "100px" }}
               radius="xs"
               variant="light"
               color="red"
@@ -115,26 +126,16 @@ export function Announcement(props: any) {
             >
               Delete
             </Button>
-            {/* <Modal
-            opened={openedEditor}
-            onClose={closeEditor}
-            title="Announcements Manager"
-            size="100%"
-          >
-            <AnnouncementsEditor />
-          </Modal> */}
-            {/* <ManageAnnouncement id={props.id} /> */}
-            {/* // closePopup={setOpened} */}
           </Popover.Dropdown>
         </Popover>
       )}
 
-      <Accordion.Control style={{ marginLeft: '100' }}>
-        {props.date}
+      <Accordion.Control style={{ marginLeft: "100" }}>
+        {date}
       </Accordion.Control>
       <Accordion.Panel>
         <TypographyStylesProvider>
-          <p dangerouslySetInnerHTML={{ __html: props.description }}></p>
+          <p dangerouslySetInnerHTML={{ __html: description }}></p>
         </TypographyStylesProvider>
       </Accordion.Panel>
     </Accordion.Item>
