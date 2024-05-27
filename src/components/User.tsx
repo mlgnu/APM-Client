@@ -1,9 +1,9 @@
-import { forwardRef, useContext, useEffect, useState } from 'react';
+import { forwardRef, useContext, useEffect, useState } from "react";
 import {
   IconChevronRight,
   IconExternalLink,
   IconUser,
-} from '@tabler/icons-react';
+} from "@tabler/icons-react";
 import {
   Group,
   Avatar,
@@ -13,16 +13,16 @@ import {
   rem,
   Modal,
   LoadingOverlay,
-} from '@mantine/core';
-import { IconTrash, IconLogout, IconUserCircle } from '@tabler/icons-react';
-import { UserContext } from '../utils/UserContext';
-import { modals } from '@mantine/modals';
-import { useDisclosure } from '@mantine/hooks';
-import { Profile } from '../pages/Profile/Profile';
-import { logout } from '../data/auth';
-import { useQueryClient } from '@tanstack/react-query';
+} from "@mantine/core";
+import { IconTrash, IconLogout, IconUserCircle } from "@tabler/icons-react";
+import { UserContext, useUserContext } from "../utils/UserContext";
+import { modals } from "@mantine/modals";
+import { useDisclosure } from "@mantine/hooks";
+import { Profile } from "../pages/Profile/Profile";
+import { logout } from "../data/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
-interface UserButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   name: string;
   email: string;
   icon?: React.ReactNode;
@@ -34,8 +34,8 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
       ref={ref}
       style={{
         // padding: 'var(--mantine-spacing-md)',
-        color: 'var(--mantine-color-text)',
-        borderRadius: 'var(--mantine-radius-sm)',
+        color: "var(--mantine-color-text)",
+        borderRadius: "var(--mantine-radius-sm)",
       }}
       {...others}
     >
@@ -60,24 +60,16 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 );
 
 export function User(props: any) {
-  const user = useContext(UserContext);
+  const user = useUserContext();
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
-  //   const [name, setName] = useState(user?.data?.firstName);
-  //   const [email, setEmail] = useState(user?.data?.userEmail);
 
-  //   useEffect(() => {
-  //     setName(user?.data?.firstName);
-  //     setEmail(user?.data?.userEmail);
-  //   }, []);
-  //   console.log(user?.data);
-  //   console.log('from user context: user');
-  if (!user?.data)
+  if (!user)
     return (
       <LoadingOverlay
         visible={true}
         zIndex={1000}
-        overlayProps={{ radius: 'sm', blur: 2 }}
+        overlayProps={{ radius: "sm", blur: 2 }}
       />
     );
   return (
@@ -92,12 +84,6 @@ export function User(props: any) {
               <IconUser style={{ width: rem(14), height: rem(14) }} />
             }
             onClick={() => {
-              // modals.openContextModal({
-              //   modal: 'profile',
-              //   title: 'Profile Mangager',
-              //   size: '35%',
-              //   innerProps: {},
-              // });
               open();
             }}
           >
@@ -107,7 +93,7 @@ export function User(props: any) {
           <Menu.Item
             onClick={() => {
               modals.openConfirmModal({
-                title: 'Logout',
+                title: "Logout",
                 centered: true,
                 children: (
                   <Text size="sm">
@@ -115,15 +101,15 @@ export function User(props: any) {
                   </Text>
                 ),
                 labels: {
-                  confirm: 'Logout',
+                  confirm: "Logout",
                   cancel: "Stay logged in, I've changed my mind",
                 },
-                confirmProps: { color: 'red' },
-                onCancel: () => console.log('Cancel'),
+                confirmProps: { color: "red" },
+                onCancel: () => console.log("Cancel"),
                 onConfirm: () => {
                   logout();
-                  queryClient.invalidateQueries({ queryKey: ['user'] });
-                  window.location.href = '/';
+                  queryClient.invalidateQueries({ queryKey: ["user"] });
+                  window.location.href = "/";
                 },
               });
             }}

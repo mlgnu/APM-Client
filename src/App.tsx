@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Profile } from '';
+import { BrowserRouter } from "react-router-dom";
 
-import { fetchUser } from './utils/fetchUser';
-import { NavLinks } from './NavLinks'; // Import your NavLinks component
-import { UserContext } from './utils/UserContext';
-import { CollapsedAppShell } from './components/AppShell';
-import { Notifications } from '@mantine/notifications';
-import { ContextModalProps, ModalsProvider } from '@mantine/modals';
-import { AnnouncementsEditor } from './pages/Announcements/AnnouncementsEditor';
+import { UserContext } from "./utils/UserContext";
+import { Notifications } from "@mantine/notifications";
+import { ContextModalProps, ModalsProvider } from "@mantine/modals";
+import { AnnouncementsEditor } from "./pages/Announcements/AnnouncementsEditor";
+import { RoleRoutes } from "./components/RolesRoutes";
+import "@mantine/dates/styles.css";
+import "@mantine/charts/styles.css";
+import { useFetchUser } from "./hooks/useFetchUser";
+import { useFetchProfile } from "./hooks/useFetchProfile";
+import { ProfileContext } from "./utils/ProfileContext";
 
 const EditorModal = ({
   context,
@@ -24,33 +25,23 @@ const EditorModal = ({
   </>
 );
 
-// const ProfileModal2 = ({
-//   innerProps,
-// }: ContextModalProps<{ edit: boolean }>) => (
-//   <>
-//     <Profile edit={innerProps.edit} />
-//   </>
-// );
-
 export function App() {
-  const user = fetchUser();
-  //   const EditorModal2 = ({ context }: ContextModalProps<{}>) => (
-  //     <>
-  //       <Profile />
-  //     </>
-  //   );
+  const { data: user } = useFetchUser();
+  const { data: profile } = useFetchProfile();
   return (
-    <UserContext.Provider value={user}>
-      {/* <React.StrictMode> */}
-      <ModalsProvider modals={{ editor: EditorModal }}>
-        <BrowserRouter>
+    <ProfileContext.Provider value={profile}>
+      <UserContext.Provider value={user}>
+        {/* <React.StrictMode> */}
+        <ModalsProvider modals={{ editor: EditorModal }}>
           <Notifications position="top-right" zIndex={1001} />
+          <BrowserRouter>
+            <RoleRoutes />
+            {/* <CollapsedAppShell /> */}
+          </BrowserRouter>
+        </ModalsProvider>
 
-          <CollapsedAppShell />
-        </BrowserRouter>
-      </ModalsProvider>
-
-      {/* <AnnouncementsEditor /> */}
-    </UserContext.Provider>
+        {/* <AnnouncementsEditor /> */}
+      </UserContext.Provider>
+    </ProfileContext.Provider>
   );
 }
