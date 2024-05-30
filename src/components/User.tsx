@@ -97,7 +97,7 @@ export function User(props: any) {
                 centered: true,
                 children: (
                   <Text size="sm">
-                    Are you sure you want to logout from yor account
+                    Are you sure you want to logout from your account
                   </Text>
                 ),
                 labels: {

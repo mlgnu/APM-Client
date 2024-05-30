@@ -11,6 +11,7 @@ import { UserContext } from "../utils/UserContext";
 import { AssDashboard } from "../pages/AssDashboard/AssDashboard";
 import FeedbackDashboard from "../pages/MonitorFeebBack/FeedbackDashboard";
 import { ProposeActivity } from "../pages/Activity/ProposeActivity";
+import { ViewActivities } from "../pages/Activity/ViewActivities";
 
 const routesConfig = [
   [
@@ -26,6 +27,7 @@ const routesConfig = [
     { path: "/sessions/view", element: <ViewSessions isAdvisor={true} /> },
     { path: "/dashbaord", element: <FeedbackDashboard /> },
     { path: "activity/make", element: <ProposeActivity /> },
+    { path: "activity/view", element: <ViewActivities /> },
   ],
   [
     { path: "/", element: <Announcements isEditor={true} /> },

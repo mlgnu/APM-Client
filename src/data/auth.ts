@@ -1,7 +1,8 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3001/api';
+import axios from "axios";
+import apiClient from "../utils/apiClient";
 
 export async function logout() {
-  return await axios.get(`${API_URL}/auth/google/logout`, {withCredentials: true});
+  return await apiClient.post(`/auth/google/logout`, {
+    withCredentials: true,
+  });
 }

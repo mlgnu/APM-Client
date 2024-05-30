@@ -23,6 +23,7 @@ export const RolesLayout = () => {
       { icon: IconBell, path: "/sessions/view", label: "View Sessions" },
       { icon: IconBell, path: "/dashbaord", label: "Feedback Dashboard" },
       { icon: IconBell, path: "/activity/make", label: "Propose Activity" },
+      { icon: IconBell, path: "/activity/view", label: "View Activities" },
     ],
     [
       { icon: IconBell, path: "/", label: "Announcements" },
