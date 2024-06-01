@@ -4,20 +4,21 @@ import {
   Box,
   Button,
   Center,
+  Container,
   Input,
   Modal,
   ScrollAreaAutosize,
+  Space,
+  Stepper,
   Table,
   TextInput,
 } from "@mantine/core";
 import { AssignmentDetails } from "./AssignmentDetails";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { modals } from "@mantine/modals";
-import { IconAdjustments } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useMakeAssignment } from "../../hooks/useMakeAssignment";
 import classes from "./style/assignment.module.css";
-import { parse } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
 export type AssignmentType = {
@@ -27,7 +28,6 @@ export type AssignmentType = {
 };
 
 export const Assignment = () => {
-  const [opened, setOpened] = useState(true);
   const [assignmentDetails, setAssignmentDetails] = useState({
     department: "",
     studentsNumber: "",
@@ -141,64 +141,53 @@ export const Assignment = () => {
       },
     });
   };
+  const [active, setActive] = useState(0);
+  const nextStep = () =>
+    setActive((current) => (current < 2 ? current + 1 : current));
+  const prevStep = () =>
+    setActive((current) => (current >= 0 ? current - 1 : current));
 
   return (
     <>
-      <Modal
-        withCloseButton={false}
-        title="Assignment Details"
-        opened={opened}
-        onClose={() => {
-          console.log("closing...");
-          // setOpened(false);
-        }}
-        closeOnClickOutside={false}
-      >
-        <AssignmentDetails
-          assignmentDetails={assignmentDetails}
-          setAssignmentDetails={setAssignmentDetails}
-          setOpened={setOpened}
-        />
-      </Modal>
-
-      <Center>
-        <Box>
-          <Table.ScrollContainer
-            component={ScrollAreaAutosize}
-            mah="800"
-            minWidth={1200}
-          >
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th maw="30px">No.</Table.Th>
-                  <Table.Th>Student Email</Table.Th>
-                  <Table.Th>Advisor Email</Table.Th>
-                  <Table.Th>Year</Table.Th>
-                  <Table.Th>Department</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>{rows}</Table.Tbody>
-            </Table>
-          </Table.ScrollContainer>
-          <Button fullWidth maw="1200" onClick={handleMakeAssignment}>
-            Make Assignment
-          </Button>
-        </Box>
-      </Center>
-
-      {!opened && (
-        <Affix position={{ bottom: 20, right: 20 }}>
-          <ActionIcon
-            onClick={() => setOpened(true)}
-            size="lg"
-            variant="filled"
-            aria-label="Settings"
-          >
-            <IconAdjustments stroke={1.5} />
-          </ActionIcon>
-        </Affix>
-      )}
+      <Container>
+        <Stepper active={active} onStepClick={setActive}>
+          <Stepper.Step label="First step" description="Assignment Details">
+            <AssignmentDetails
+              assignmentDetails={assignmentDetails}
+              setAssignmentDetails={setAssignmentDetails}
+              setOpened={nextStep}
+            />
+            <Space h="lg" />
+          </Stepper.Step>
+          <Stepper.Step label="Second step" description="Make Assignments">
+            <Center>
+              <Box>
+                <Table.ScrollContainer
+                  component={ScrollAreaAutosize}
+                  mah="800"
+                  minWidth={1200}
+                >
+                  <Table>
+                    <Table.Thead>
+                      <Table.Tr>
+                        <Table.Th maw="30px">No.</Table.Th>
+                        <Table.Th>Student Email</Table.Th>
+                        <Table.Th>Advisor Email</Table.Th>
+                        <Table.Th>Year</Table.Th>
+                        <Table.Th>Department</Table.Th>
+                      </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>{rows}</Table.Tbody>
+                  </Table>
+                </Table.ScrollContainer>
+                <Button fullWidth maw="1200" onClick={handleMakeAssignment}>
+                  Make Assignment
+                </Button>
+              </Box>
+            </Center>
+          </Stepper.Step>
+        </Stepper>
+      </Container>
     </>
   );
 };

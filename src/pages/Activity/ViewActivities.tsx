@@ -2,15 +2,31 @@ import { ActionIcon, Box, Container, Group } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
 import React, { useState } from "react";
 import { useFetchActivities } from "../../hooks/Activity/useFetchActivities";
-import { IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
+import { useDeleteActivity } from "../../hooks/Activity/useDeleteActivity";
+import { modals } from "@mantine/modals";
+import { format } from "date-fns";
+import ViewActivity from "./ViewActivity";
+import { ActivityAction } from "./ActivityAction";
+import { ActivityStatus } from "./ActivityStatus";
 
-export const ViewActivities = (props: {}) => {
+type ViewActivitiesProps = {
+  isAdvisor: boolean;
+  isCoordinator: boolean;
+};
+
+export const ViewActivities = ({
+  isAdvisor,
+  isCoordinator,
+}: ViewActivitiesProps) => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const { data: activities } = useFetchActivities({
     page,
     limit: pageSize,
   });
+  const { mutate: deleteActivity } = useDeleteActivity();
 
   const printStatus = (status: number) => {
     switch (status) {
@@ -18,11 +34,31 @@ export const ViewActivities = (props: {}) => {
         return "Pending";
       case 1:
         return "Approved";
-      case 2:
+      case -1:
         return "Rejected";
       default:
         return "Pending";
     }
+  };
+
+  const navigate = useNavigate();
+  const redirectEdit = (recordId: number) => {
+    const record = activities?.payload.find((r) => r.id === recordId);
+    navigate("/activity/make", {
+      state: { edit: true, record },
+    });
+  };
+
+  const handleDelete = (assignmentId: number) => {
+    modals.openConfirmModal({
+      title: "Delete Activity",
+      children: "Are you sure you want to delete this activity?",
+      labels: { confirm: "Yes", cancel: "No" },
+      onConfirm: () => {
+        console.log("Assignment deleted");
+        deleteActivity(assignmentId);
+      },
+    });
   };
 
   return (
@@ -44,14 +80,16 @@ export const ViewActivities = (props: {}) => {
             render: (record) => record.advisorId.user.userEmail.split("@")[0],
           },
           {
-            accessor: "",
+            accessor: "dfd",
             title: "Start",
-            render: (record) => record.dateStart,
+
+            render: (record) =>
+              format(new Date(record.dateStart), "d MMM yyyy"),
           },
           {
-            accessor: "date",
+            accessor: "datddfe",
             title: "End",
-            render: (record) => record.dateEnd,
+            render: (record) => format(new Date(record.dateEnd), "d MMM yyyy"),
           },
           {
             accessor: "date",
@@ -65,9 +103,37 @@ export const ViewActivities = (props: {}) => {
             textAlign: "right",
             render: (record) => (
               <Group gap={4} justify="right" wrap="nowrap">
-                <ActionIcon size="sm" variant="subtle" color="red">
-                  <IconTrash size={16} />
-                </ActionIcon>
+                <ActivityStatus
+                  advisorEmail={record.advisorId.user.userEmail}
+                  coordinatorEmail={record.coordinatorId.user.userEmail || ""}
+                  status={record.status}
+                  message={record.message || ""}
+                  creationTime={record.createdAt}
+                  modifiedTime={record.updatedAt}
+                />
+                <ViewActivity description={record.description} />
+                {isCoordinator && <ActivityAction activityId={record.id} />}
+                {isAdvisor && (
+                  <>
+                    <ActionIcon
+                      onClick={() => redirectEdit(record.id)}
+                      size="sm"
+                      variant="subtle"
+                      color="blue"
+                    >
+                      <IconEdit size={16} />
+                    </ActionIcon>
+
+                    <ActionIcon
+                      onClick={() => handleDelete(record.id)}
+                      size="sm"
+                      variant="subtle"
+                      color="red"
+                    >
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  </>
+                )}
               </Group>
             ),
           },

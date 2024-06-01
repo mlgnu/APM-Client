@@ -1,4 +1,12 @@
-import { AppShell, Burger, Group } from "@mantine/core";
+import {
+  AppShell,
+  Burger,
+  Flex,
+  Group,
+  Image,
+  Space,
+  Title,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MantineLogo } from "@mantinex/mantine-logo";
 import LoginButton from "./ui/LoginButton";
@@ -10,6 +18,8 @@ import { User } from "./User";
 import { ProfileContext, useProfileContext } from "../utils/ProfileContext";
 import { Outlet } from "react-router-dom";
 import { RolesLayout } from "./RolesLayout";
+import { ToggleColorScheme } from "./ToggleColorScheme";
+import { capitalize } from "lodash";
 
 export function CollapsedAppShell() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -19,6 +29,12 @@ export function CollapsedAppShell() {
 
   const user = useContext(UserContext);
   const profile = useContext(ProfileContext);
+
+  const getName = () => {
+    if (user?.role === 2 || user?.role === 3)
+      return capitalize(user?.userEmail.split("@")[0]) || "";
+    return `${profile?.firstName || ""} ${profile?.lastName || ""}`;
+  };
 
   return (
     <AppShell
@@ -32,51 +48,33 @@ export function CollapsedAppShell() {
     >
       <AppShell.Header>
         <Group h="100%" px="md">
-          {user ? (
-            <Burger
-              opened={mobileOpened}
-              onClick={toggleMobile}
-              hiddenFrom="sm"
-              size="sm"
-            />
-          ) : (
-            ""
-          )}
-          {user ? (
-            <Burger
-              opened={desktopOpened}
-              onClick={toggleDesktop}
-              visibleFrom="sm"
-              size="sm"
-            />
-          ) : (
-            ""
-          )}
-          <Container
-            style={{
-              width: "100%",
-              maxWidth: "900px",
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-            }}
+          <Burger
+            opened={mobileOpened}
+            onClick={toggleMobile}
+            hiddenFrom="sm"
+            hidden={!user}
+            size="sm"
+          />
+          <Burger
+            hidden={!user}
+            opened={desktopOpened}
+            onClick={toggleDesktop}
+            visibleFrom="sm"
+            size="sm"
+          />
+          <Title
+            style={{ marginRight: "auto", marginLeft: "auto" }}
+            c="blue.8"
+            order={2}
           >
-            <MantineLogo style={{ marginRight: "auto" }} size={30} />
-
-            {/* {user?.data?.id && (
-              <Text style={{ marginLeft: 'auto' }} size="lg">
-                Hi, {user.data.firstName + ' ' + user.data.lastName}
-              </Text>
-            )} */}
-            {!user ? (
-              <LoginButton />
-            ) : (
-              <User
-                name={`${profile?.firstName || ""} ${profile?.lastName || ""}`}
-                email={user.userEmail}
-              />
-            )}
-          </Container>
+            Monitory
+          </Title>
+          {!user ? (
+            <LoginButton />
+          ) : (
+            <User role={user.role} name={getName()} email={user.userEmail} />
+          )}
+          <ToggleColorScheme />
         </Group>
       </AppShell.Header>
       {user ? <AppShell.Navbar p="md">{<RolesLayout />}</AppShell.Navbar> : ""}

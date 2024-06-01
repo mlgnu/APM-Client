@@ -22,11 +22,15 @@ import Subscript from "@tiptap/extension-subscript";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import { useMakeActivity } from "../../hooks/Activity/useMakeActivity";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEditActivity } from "../../hooks/Activity/useEditActivity";
 
 export const ProposeActivity = (props: {}) => {
+  const { state } = useLocation();
+  console.log(state, "state");
   const form = useForm({
     initialValues: {
-      student: "",
+      student: state?.record?.studentId?.id?.toString() || "",
       activityDuration: [undefined, undefined],
       content: "",
     },
@@ -43,8 +47,21 @@ export const ProposeActivity = (props: {}) => {
     },
   });
 
+  if (state?.edit) {
+    form.setInitialValues({
+      student: state?.record?.studentId?.id?.toString() || "",
+      activityDuration: [
+        new Date(state?.record?.dateStart),
+        new Date(state?.record?.dateEnd),
+      ] || [undefined, undefined],
+      content: state?.record?.description || "",
+    });
+  }
+
+  const { mutate: editActivity } = useEditActivity();
   const { mutate: makeActivity } = useMakeActivity();
   const { data: students } = useFetchAdvisorStudents();
+  const navigate = useNavigate();
   const [active, setActive] = useState(0);
   const nextStep = () =>
     setActive((current) => (current < 2 ? current + 1 : current));
@@ -65,12 +82,23 @@ export const ProposeActivity = (props: {}) => {
     },
   );
   const handleMakeActivity = () => {
-    makeActivity({
-      studentId: parseInt(form.values.student),
-      description: form.values.content,
-      startDate: form.values.activityDuration[0] as unknown as Date,
-      endDate: form.values.activityDuration[1] as unknown as Date,
-    });
+    if (state?.edit) {
+      editActivity({
+        id: state?.record?.id,
+        studentId: parseInt(form.values.student),
+        description: form.values.content,
+        startDate: form.values.activityDuration[0] as unknown as Date,
+        endDate: form.values.activityDuration[1] as unknown as Date,
+      });
+    } else {
+      makeActivity({
+        studentId: parseInt(form.values.student),
+        description: form.values.content,
+        startDate: form.values.activityDuration[0] as unknown as Date,
+        endDate: form.values.activityDuration[1] as unknown as Date,
+      });
+    }
+    navigate("/activity/view");
   };
   const editorExtensions = useEditor({
     extensions: [

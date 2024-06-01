@@ -15,6 +15,7 @@ export const RolesLayout = () => {
       { icon: IconBell, path: "/", label: "Announcements" },
       { icon: IconBell, path: "message", label: "Messages" },
       { icon: IconBell, path: "/sessions/view", label: "View Sessions" },
+      { icon: IconBell, path: "/activity/view", label: "View Activities" },
     ],
     [
       { icon: IconBell, path: "/", label: "Announcements" },
@@ -29,6 +30,7 @@ export const RolesLayout = () => {
       { icon: IconBell, path: "/", label: "Announcements" },
       { icon: IconBell, path: "/assignment", label: "Assignments" },
       { icon: IconBell, path: "/assignments/view", label: "View Assignments" },
+      { icon: IconBell, path: "/activity/view", label: "View Activities" },
     ],
     [
       { icon: IconBell, path: "/assignments/view", label: "View Assignments" },

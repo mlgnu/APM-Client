@@ -26,6 +26,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useDeleteAssignment } from "../../hooks/useDeleteAssignment";
 import { Assignment } from "./Assignment";
 import { useAssignmentAction } from "../../hooks/useAssignmentAction";
+import { useNavigate } from "react-router-dom";
 
 type ViewAssignmentsProps = {
   isSupervisor: boolean;
@@ -45,6 +46,11 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
   });
 
   const { mutate: approveAssignment } = useAssignmentAction();
+  const navigate = useNavigate();
+
+  const handleEdit = (assignmentId: number) => {
+    navigate(`/assignment/make`, {});
+  };
 
   const handleApprove = (assignmentId: number) => {
     modals.openConfirmModal({

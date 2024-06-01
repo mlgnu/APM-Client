@@ -10,6 +10,8 @@ import "@mantine/charts/styles.css";
 import { useFetchUser } from "./hooks/useFetchUser";
 import { useFetchProfile } from "./hooks/useFetchProfile";
 import { ProfileContext } from "./utils/ProfileContext";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundaryModal } from "./components/ErrorBoundaryModal";
 
 const EditorModal = ({
   context,
@@ -29,19 +31,21 @@ export function App() {
   const { data: user } = useFetchUser();
   const { data: profile } = useFetchProfile();
   return (
-    <ProfileContext.Provider value={profile}>
-      <UserContext.Provider value={user}>
-        {/* <React.StrictMode> */}
-        <ModalsProvider modals={{ editor: EditorModal }}>
-          <Notifications position="top-right" zIndex={1001} />
-          <BrowserRouter>
-            <RoleRoutes />
-            {/* <CollapsedAppShell /> */}
-          </BrowserRouter>
-        </ModalsProvider>
+    <ErrorBoundary FallbackComponent={ErrorBoundaryModal}>
+      <ProfileContext.Provider value={profile}>
+        <UserContext.Provider value={user}>
+          {/* <React.StrictMode> */}
+          <ModalsProvider modals={{ editor: EditorModal }}>
+            <Notifications position="top-right" zIndex={1001} />
+            <BrowserRouter>
+              <RoleRoutes />
+              {/* <CollapsedAppShell /> */}
+            </BrowserRouter>
+          </ModalsProvider>
 
-        {/* <AnnouncementsEditor /> */}
-      </UserContext.Provider>
-    </ProfileContext.Provider>
+          {/* <AnnouncementsEditor /> */}
+        </UserContext.Provider>
+      </ProfileContext.Provider>
+    </ErrorBoundary>
   );
 }

@@ -1,8 +1,4 @@
-import {
-  QueryFunctionContext,
-  QueryKey,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import apiClient from "../../utils/apiClient";
 import { PaginationParams } from "../../utils/Globals";
 
@@ -21,36 +17,36 @@ export interface Payload {
   updatedAt: string;
   studentId: StudentId;
   advisorId: AdvisorId;
+  coordinatorId: CoordinatorId;
 }
 
 export interface StudentId {
   id: number;
-  firstName: string;
-  lastName: string;
-  department: string;
   user: User;
 }
 
 export interface User {
   id: number;
   userEmail: string;
-  role: number;
 }
 
 export interface AdvisorId {
   id: number;
-  firstName: string;
-  lastName: string;
-  department: string;
   user: User2;
 }
 
 export interface User2 {
-  id: number;
   userEmail: string;
-  role: number;
 }
 
+export interface CoordinatorId {
+  id: number;
+  user: User3;
+}
+
+export interface User3 {
+  userEmail: string;
+}
 const fetchActivities = async ({
   queryKey,
 }: QueryFunctionContext<[string, PaginationParams]>) => {

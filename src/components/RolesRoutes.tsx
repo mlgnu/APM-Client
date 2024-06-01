@@ -12,13 +12,18 @@ import { AssDashboard } from "../pages/AssDashboard/AssDashboard";
 import FeedbackDashboard from "../pages/MonitorFeebBack/FeedbackDashboard";
 import { ProposeActivity } from "../pages/Activity/ProposeActivity";
 import { ViewActivities } from "../pages/Activity/ViewActivities";
+import { NotFound } from "../pages/NotFound";
 
 const routesConfig = [
   [
     { path: "/", element: <Announcements isEditor={false} /> },
     { path: "message", element: <MessageAdvisor isAdvisor={false} /> },
     { path: "/sessions/view", element: <ViewSessions isAdvisor={false} /> },
-    { path: "*", element: <div>404</div> },
+    {
+      path: "activity/view",
+      element: <ViewActivities isCoordinator={false} isAdvisor={false} />,
+    },
+    { path: "*", element: <NotFound /> },
   ],
   [
     { path: "/", element: <Announcements isEditor={false} /> },
@@ -27,7 +32,11 @@ const routesConfig = [
     { path: "/sessions/view", element: <ViewSessions isAdvisor={true} /> },
     { path: "/dashbaord", element: <FeedbackDashboard /> },
     { path: "activity/make", element: <ProposeActivity /> },
-    { path: "activity/view", element: <ViewActivities /> },
+    {
+      path: "activity/view",
+      element: <ViewActivities isCoordinator={false} isAdvisor={true} />,
+    },
+    { path: "*", element: <NotFound /> },
   ],
   [
     { path: "/", element: <Announcements isEditor={true} /> },
@@ -36,6 +45,11 @@ const routesConfig = [
       path: "/assignments/view",
       element: <ViewAssignments isSupervisor={false} />,
     },
+    {
+      path: "activity/view",
+      element: <ViewActivities isAdvisor={false} isCoordinator={true} />,
+    },
+    { path: "*", element: <NotFound /> },
   ],
   [
     { path: "/", element: <Announcements isEditor={false} /> },
@@ -44,8 +58,12 @@ const routesConfig = [
       element: <ViewAssignments isSupervisor={true} />,
     },
     { path: "/assdashboard", element: <AssDashboard /> },
+    { path: "*", element: <NotFound /> },
   ],
-  [{ path: "/", element: <Announcements isEditor={false} /> }],
+  [
+    { path: "/", element: <Announcements isEditor={false} /> },
+    { path: "*", element: <NotFound /> },
+  ],
 ];
 
 export const RoleRoutes = () => {

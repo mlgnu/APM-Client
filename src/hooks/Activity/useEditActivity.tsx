@@ -1,22 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../utils/apiClient";
+import { ActivityReq } from "./useMakeActivity";
 
-export type ActivityReq = {
-  studentId: number;
-  description: string;
-  startDate: Date;
-  endDate: Date;
-};
+type updateActivity = ActivityReq & { id: number };
 
-const makeActivity = async (activity: ActivityReq) => {
-  const data = await apiClient.post("activity", activity);
+const editActivity = async (activity: updateActivity) => {
+  const data = await apiClient.patch(`activity/${activity.id}`, activity);
   return data;
 };
 
-export const useMakeActivity = () => {
+export const useEditActivity = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: makeActivity,
+    mutationFn: editActivity,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["activities"],

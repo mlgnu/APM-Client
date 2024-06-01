@@ -19,6 +19,9 @@ export const MessageList = ({ setChatId, styles }: MessageListProps) => {
     setChatId(contacts.data?.[active].id || 0);
   }, [active, contacts.data, setChatId]);
 
+  if (contacts.data?.length == 0) {
+    return;
+  }
   const contactsNav = contacts.data?.map((contact, index) => {
     return (
       <NavLink

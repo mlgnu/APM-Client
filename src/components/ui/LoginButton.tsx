@@ -18,7 +18,7 @@ const LoginButton = () => {
 
   return (
     <Button onClick={handleLogin} variant="contained" color="primary">
-      Log In with Google
+      Log In
     </Button>
   );
 };

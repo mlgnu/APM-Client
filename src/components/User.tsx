@@ -33,7 +33,6 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
     <UnstyledButton
       ref={ref}
       style={{
-        // padding: 'var(--mantine-spacing-md)',
         color: "var(--mantine-color-text)",
         borderRadius: "var(--mantine-radius-sm)",
       }}
@@ -41,8 +40,6 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
     >
       <Group>
         <IconUserCircle size={30} />
-        {/* <Avatar src={image} radius="xl" /> */}
-
         <div style={{ flex: 1 }}>
           <Text size="sm" fw={500}>
             {name}
@@ -59,7 +56,13 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
   ),
 );
 
-export function User(props: any) {
+type UserProps = {
+  email: string;
+  name: string;
+  role: number;
+};
+
+export function User({ email, name, role }: UserProps) {
   const user = useUserContext();
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
@@ -76,19 +79,21 @@ export function User(props: any) {
     <>
       <Menu withArrow>
         <Menu.Target>
-          <UserButton name={props.name} email={props.email} />
+          <UserButton name={name} email={email} />
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item
-            leftSection={
-              <IconUser style={{ width: rem(14), height: rem(14) }} />
-            }
-            onClick={() => {
-              open();
-            }}
-          >
-            Profile
-          </Menu.Item>
+          {(role === 0 || role === 1) && (
+            <Menu.Item
+              leftSection={
+                <IconUser style={{ width: rem(14), height: rem(14) }} />
+              }
+              onClick={() => {
+                open();
+              }}
+            >
+              Profile
+            </Menu.Item>
+          )}
 
           <Menu.Item
             onClick={() => {
@@ -109,7 +114,7 @@ export function User(props: any) {
                 onConfirm: () => {
                   logout();
                   queryClient.invalidateQueries({ queryKey: ["user"] });
-                  window.location.href = "/";
+                  // window.location.href = "/";
                 },
               });
             }}
@@ -122,19 +127,6 @@ export function User(props: any) {
           >
             Log out
           </Menu.Item>
-          {/* <Menu.Item component="a" href="https://mantine.dev">
-          Mantine website
-        </Menu.Item> */}
-          {/* <Menu.Item
-          leftSection={
-            <IconExternalLink style={{ width: rem(14), height: rem(14) }} />
-          }
-          component="a"
-          href="https://mantine.dev"
-          target="_blank"
-        >
-          External link
-        </Menu.Item> */}
         </Menu.Dropdown>
       </Menu>
 
@@ -145,7 +137,7 @@ export function User(props: any) {
         onClose={close}
         withCloseButton={false}
       >
-        <Profile close={close} />
+        <Profile role={role} close={close} />
       </Modal>
     </>
   );
