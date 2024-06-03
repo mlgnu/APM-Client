@@ -23,14 +23,6 @@ import { App } from "./App.tsx";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
-const ProfileModal2 = ({
-  innerProps,
-}: ContextModalProps<{ edit: boolean }>) => (
-  <>
-    <Profile edit={innerProps.edit} />
-  </>
-);
-
 const theme = createTheme({
   primaryColor: "blue",
   colors: {

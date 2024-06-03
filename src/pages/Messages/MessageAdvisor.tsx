@@ -8,10 +8,12 @@ import {
   Transition,
   Burger,
   Alert,
+  Menu,
+  rem,
+  Portal,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconInfoCircle, IconSend2 } from "@tabler/icons-react";
-import classes from "./style/message.module.css";
+import { IconInfoCircle, IconMessage, IconSend2 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { MessageList } from "./MessageList";
 import { MessageCard } from "./MessageCard";
@@ -20,10 +22,14 @@ import { useSendMessage } from "../../hooks/useSendMessage";
 
 type MessageAdvisorProps = {
   isAdvisor: boolean;
+  messageDisclosure: unknown;
 };
 
-export const MessageAdvisor = ({ isAdvisor }: MessageAdvisorProps) => {
-  const [opened, { open, close }] = useDisclosure(true);
+export const MessageAdvisor = ({
+  isAdvisor,
+  messageDisclosure,
+}: MessageAdvisorProps) => {
+  const [opened, { open, close }] = useDisclosure(false);
   const [chatId, setChatId] = useState(0);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -80,72 +86,90 @@ export const MessageAdvisor = ({ isAdvisor }: MessageAdvisorProps) => {
   };
 
   return (
-    <Modal opened={opened} withCloseButton={false} onClose={close} size="70%">
-      {chatId === -1 ? (
-        <Alert
-          variant="light"
-          color="blue"
-          title="No Assignments Yet!"
-          icon={<IconInfoCircle />}
+    <>
+      <Menu.Item
+        onClick={open}
+        leftSection={
+          <IconMessage style={{ width: rem(14), height: rem(14) }} />
+        }
+      >
+        Message
+      </Menu.Item>
+      <Portal>
+        <Modal
+          withinPortal={true}
+          opened={opened}
+          withCloseButton={false}
+          onClose={close}
+          size="70%"
         >
-          {isAdvisor
-            ? "No students have been assigned to you yet."
-            : "No advisor has been assigned to you yet."}
-        </Alert>
-      ) : (
-        <>
-          <Modal.Header>
-            <Burger opened={burgerOpened} onClick={burgerToggle} />
-          </Modal.Header>
-          <Box
-            style={{
-              display: "flex",
-            }}
-          >
-            <Transition
-              mounted={burgerOpened}
-              transition="fade-right"
-              duration={400}
-              timingFunction="ease"
+          {chatId === -1 ? (
+            <Alert
+              variant="light"
+              color="blue"
+              title="No Assignments Yet!"
+              icon={<IconInfoCircle />}
             >
-              {(styles) => (
-                <MessageList styles={styles} setChatId={setChatId} />
-              )}
-            </Transition>
-            <Box style={{ marginLeft: 10, flexGrow: "1" }}>
-              <ScrollArea
-                viewportRef={scrollAreaRef}
-                offsetScrollbars
-                scrollHideDelay={500}
-                h={700}
+              {isAdvisor
+                ? "No students have been assigned to you yet."
+                : "No advisor has been assigned to you yet."}
+            </Alert>
+          ) : (
+            <>
+              <Modal.Header>
+                <Burger opened={burgerOpened} onClick={burgerToggle} />
+              </Modal.Header>
+              <Box
+                style={{
+                  display: "flex",
+                }}
               >
-                {messages}
-              </ScrollArea>
-              <Box style={{ display: "flex", marginTop: "auto" }}>
-                <Textarea
-                  ref={textAreaRef}
-                  style={{ flexGrow: 1, marginRight: 10 }}
-                  autosize
-                  placeholder="Send Message"
-                  radius="md"
-                  variant="filled"
-                  minRows={1}
-                ></Textarea>
-                <Badge color="blue" size="xl" circle>
-                  <Center>
-                    <IconSend2
-                      onClick={() =>
-                        sendMessage(textAreaRef.current?.value || "")
-                      }
-                      color="white"
-                    />
-                  </Center>
-                </Badge>
+                <Transition
+                  mounted={burgerOpened}
+                  transition="fade-right"
+                  duration={400}
+                  timingFunction="ease"
+                >
+                  {(styles) => (
+                    <MessageList styles={styles} setChatId={setChatId} />
+                  )}
+                </Transition>
+                <Box style={{ marginLeft: 10, flexGrow: "1" }}>
+                  <ScrollArea
+                    viewportRef={scrollAreaRef}
+                    offsetScrollbars
+                    scrollHideDelay={500}
+                    h={700}
+                  >
+                    {messages}
+                  </ScrollArea>
+                  <Box style={{ display: "flex", marginTop: "auto" }}>
+                    <Textarea
+                      ref={textAreaRef}
+                      style={{ flexGrow: 1, marginRight: 10 }}
+                      autosize
+                      placeholder="Send Message"
+                      radius="md"
+                      variant="filled"
+                      minRows={1}
+                    ></Textarea>
+                    <Badge color="blue" size="xl" circle>
+                      <Center>
+                        <IconSend2
+                          onClick={() =>
+                            sendMessage(textAreaRef.current?.value || "")
+                          }
+                          color="white"
+                        />
+                      </Center>
+                    </Badge>
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </Box>
-        </>
-      )}
-    </Modal>
+            </>
+          )}
+        </Modal>
+      </Portal>
+    </>
   );
 };

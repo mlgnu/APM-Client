@@ -25,19 +25,28 @@ import { useMakeActivity } from "../../hooks/Activity/useMakeActivity";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEditActivity } from "../../hooks/Activity/useEditActivity";
 
+type ProposeActivityForm = {
+  student: string;
+  activityDuration: [Date | undefined, Date | undefined];
+  content: string;
+};
+
 export const ProposeActivity = (props: {}) => {
   const { state } = useLocation();
   console.log(state, "state");
-  const form = useForm({
+  const form = useForm<ProposeActivityForm>({
     initialValues: {
       student: state?.record?.studentId?.id?.toString() || "",
-      activityDuration: [undefined, undefined],
-      content: "",
+      activityDuration: [
+        state?.record?.dateStart && new Date(state?.record?.dateStart),
+        state?.record?.dateEnd && new Date(state?.record?.dateEnd),
+      ] || [undefined, undefined],
+      content: state?.record?.description || "",
     },
     validate: {
       student: (value) => (value.length <= 0 ? "Student is required" : null),
       activityDuration: (value) =>
-        value[0] === null ? "Activity duration is required" : null,
+        value[0] === undefined ? "Activity duration is required" : null,
       content: (value) =>
         editorExtensions &&
         editorExtensions.getText().length! <= 0 &&
@@ -53,7 +62,7 @@ export const ProposeActivity = (props: {}) => {
       activityDuration: [
         new Date(state?.record?.dateStart),
         new Date(state?.record?.dateEnd),
-      ] || [undefined, undefined],
+      ] || [new Date(), new Date()],
       content: state?.record?.description || "",
     });
   }
@@ -66,7 +75,7 @@ export const ProposeActivity = (props: {}) => {
   const nextStep = () =>
     setActive((current) => (current < 2 ? current + 1 : current));
   const prevStep = () =>
-    setActive((current) => (current >= 0 ? current - 1 : current));
+    setActive((current) => (current > 0 ? current - 1 : current));
 
   const studentsSelectList: ComboboxData | undefined = students?.map(
     (student) => {

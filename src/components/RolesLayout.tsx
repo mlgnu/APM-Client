@@ -1,8 +1,17 @@
-import { NavLink } from "@mantine/core";
-import { IconBell, IconUser } from "@tabler/icons-react";
+import { NavLink as MantineNav, Button } from "@mantine/core";
+import {
+  IconActivity,
+  IconBell,
+  IconCalendarClock,
+  IconExchange,
+  IconEye,
+  IconProgress,
+  IconUser,
+} from "@tabler/icons-react";
 import React, { useContext, useState } from "react";
-import { Link, Outlet, Routes } from "react-router-dom";
+import { Link, NavLink, Outlet, Routes } from "react-router-dom";
 import { UserContext, useUserContext } from "../utils/UserContext";
+import cx from "clsx";
 
 export const RolesLayout = () => {
   const user = useUserContext();
@@ -13,14 +22,16 @@ export const RolesLayout = () => {
   const navItemsConfig = [
     [
       { icon: IconBell, path: "/", label: "Announcements" },
-      { icon: IconBell, path: "message", label: "Messages" },
-      { icon: IconBell, path: "/sessions/view", label: "View Sessions" },
-      { icon: IconBell, path: "/activity/view", label: "View Activities" },
+      {
+        icon: IconCalendarClock,
+        path: "/sessions/view",
+        label: "View Sessions",
+      },
+      { icon: IconProgress, path: "/activity/view", label: "View Activities" },
     ],
     [
       { icon: IconBell, path: "/", label: "Announcements" },
-      { icon: IconBell, path: "message", label: "Message Students" },
-      { icon: IconBell, path: "/sessions", label: "Schedule Session" },
+      { icon: IconBell, path: "/sessions/manage", label: "Schedule Session" },
       { icon: IconBell, path: "/sessions/view", label: "View Sessions" },
       { icon: IconBell, path: "/dashbaord", label: "Feedback Dashboard" },
       { icon: IconBell, path: "/activity/make", label: "Propose Activity" },
@@ -28,9 +39,9 @@ export const RolesLayout = () => {
     ],
     [
       { icon: IconBell, path: "/", label: "Announcements" },
-      { icon: IconBell, path: "/assignment", label: "Assignments" },
-      { icon: IconBell, path: "/assignments/view", label: "View Assignments" },
-      { icon: IconBell, path: "/activity/view", label: "View Activities" },
+      { icon: IconExchange, path: "/assignment", label: "Make Assignment" },
+      { icon: IconEye, path: "/assignments/view", label: "View Assignments" },
+      { icon: IconActivity, path: "/activity/view", label: "View Activities" },
     ],
     [
       { icon: IconBell, path: "/assignments/view", label: "View Assignments" },
@@ -39,17 +50,22 @@ export const RolesLayout = () => {
   ];
 
   const navItems = navItemsConfig[role] || [];
-  const [activeRoute, setActiveRoute] = useState(0);
   const navLinks = navItems.map((item, index) => (
-    <NavLink
-      component={Link}
-      to={item.path}
+    <MantineNav
       key={item.label}
-      active={index === activeRoute}
-      label={item.label}
       leftSection={<item.icon size="1rem" stroke={1.5} />}
-      onClick={() => setActiveRoute(index)}
-    ></NavLink>
+      label={item.label}
+      renderRoot={({ className, ...others }) => (
+        <NavLink
+          to={item.path}
+          key={item.label}
+          className={({ isActive }) =>
+            cx(className, { "active-class": isActive })
+          }
+          {...others}
+        />
+      )}
+    ></MantineNav>
   ));
   return <>{navLinks}</>;
 };

@@ -63,6 +63,7 @@ export function CollapsedAppShell() {
             size="sm"
           />
           <Title
+            visibleFrom="sm"
             style={{ marginRight: "auto", marginLeft: "auto" }}
             c="blue.8"
             order={2}

@@ -1,9 +1,8 @@
 import { ActionIcon, Box, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEdit } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconEyeX, IconView360 } from "@tabler/icons-react";
 import { useState } from "react";
 import { ViewFeedback } from "./ViewFeedback";
-import { ViewSessions } from "../Monitor/ViewSessions";
 import { MakeFeedback } from "./MakeFeedback";
 
 type ManageFeedbackProps = {
@@ -19,8 +18,8 @@ export const ManageFeedback = ({
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <Box>
-      <ActionIcon onClick={open} size="sm" variant="subtle" color="blue">
-        <IconEdit size={16} />
+      <ActionIcon onClick={open} size="sm" variant="subtle" color="yellow">
+        <IconEye size={16} />
       </ActionIcon>
 
       <Modal

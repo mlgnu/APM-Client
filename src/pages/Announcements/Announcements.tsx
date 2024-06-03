@@ -1,6 +1,4 @@
-import { relative } from "path";
 import { AnnouncementsEditor } from "./AnnouncementsEditor";
-import { ViewAnnouncements } from "./ViewAnnouncements";
 import {
   Accordion,
   ActionIcon,
@@ -43,7 +41,7 @@ export function Announcements({ isEditor }: AnnouncementsProps) {
   const [openedEditor, { open: openEditor, close: closeEditor }] =
     useDisclosure(false);
   console.log(data, "data");
-  const announcements = data?.data?.payload.map((announcement: any) => (
+  const announcements = data?.data?.payload?.map((announcement: any) => (
     <Announcement
       isEditor={isEditor}
       key={announcement.id}
@@ -66,7 +64,7 @@ export function Announcements({ isEditor }: AnnouncementsProps) {
         </Accordion>
       </Container>
       <Pagination
-        className={classes.pagination}
+        style={{ margin: "20px", display: "flex", justifyContent: "center" }}
         total={data?.data?.pages}
         onChange={setPage}
       />
@@ -85,12 +83,14 @@ export function Announcements({ isEditor }: AnnouncementsProps) {
                 innerProps: {
                   edit: false,
                   // description: '',
-                  id: props.id,
+                  // TODO - Check this code
+                  id: "0",
                 },
               });
             }}
           >
             <IconAdjustments
+              onClick={openEditor}
               style={{
                 width: "70%",
                 height: "70%",

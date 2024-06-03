@@ -9,6 +9,7 @@ export interface ActivitiesResponse {
 
 export interface Payload {
   id: number;
+  message: string;
   description: string;
   dateStart: string;
   dateEnd: string;

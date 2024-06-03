@@ -1,13 +1,11 @@
-import { useFetchStudentAdvisorAssignment } from "../../hooks/useFetchStudentAdvisorAssignments";
+import { StudentAdvisorResponse } from "../../hooks/useFetchStudentAdvisorAssignments";
 import { Table } from "@mantine/core";
 
-type displayAssignmentProps = {
-  assignmentId: number;
+type DisplayAssignmentProps = {
+  assignments: StudentAdvisorResponse[];
 };
 
-export const DisplayAssignment = ({ assignmentId }: displayAssignmentProps) => {
-  const { data: assignments } = useFetchStudentAdvisorAssignment(assignmentId);
-
+export const DisplayAssignment = ({ assignments }: DisplayAssignmentProps) => {
   const rows = assignments?.map((assignment) => (
     <Table.Tr key={assignment.id}>
       <Table.Td>{assignment.id}</Table.Td>

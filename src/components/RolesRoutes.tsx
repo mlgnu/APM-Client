@@ -17,7 +17,6 @@ import { NotFound } from "../pages/NotFound";
 const routesConfig = [
   [
     { path: "/", element: <Announcements isEditor={false} /> },
-    { path: "message", element: <MessageAdvisor isAdvisor={false} /> },
     { path: "/sessions/view", element: <ViewSessions isAdvisor={false} /> },
     {
       path: "activity/view",
@@ -27,8 +26,7 @@ const routesConfig = [
   ],
   [
     { path: "/", element: <Announcements isEditor={false} /> },
-    { path: "message", element: <MessageAdvisor isAdvisor={true} /> },
-    { path: "/sessions", element: <ManageSession /> },
+    { path: "/sessions/manage", element: <ManageSession /> },
     { path: "/sessions/view", element: <ViewSessions isAdvisor={true} /> },
     { path: "/dashbaord", element: <FeedbackDashboard /> },
     { path: "activity/make", element: <ProposeActivity /> },

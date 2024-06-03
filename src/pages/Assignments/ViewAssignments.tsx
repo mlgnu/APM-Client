@@ -17,16 +17,20 @@ import {
   IconCheck,
   IconXboxX,
 } from "@tabler/icons-react";
-import { useState } from "react";
-import { useFetchAssignmentsForCoordinator } from "../../hooks/useFetchAssignmentsForCoordinator";
+import { useEffect, useState } from "react";
+import {
+  Payload,
+  useFetchAssignmentsForCoordinator,
+} from "../../hooks/useFetchAssignmentsForCoordinator";
 import { modals } from "@mantine/modals";
 import { AssignmentStatus } from "./AssignmentStatus";
 import { DisplayAssignment } from "./DisplayAssignment";
 import { useDisclosure } from "@mantine/hooks";
 import { useDeleteAssignment } from "../../hooks/useDeleteAssignment";
-import { Assignment } from "./Assignment";
+import { Assignment, EditAssignmentProps } from "./Assignment";
 import { useAssignmentAction } from "../../hooks/useAssignmentAction";
 import { useNavigate } from "react-router-dom";
+import { useFetchStudentAdvisorAssignment } from "../../hooks/useFetchStudentAdvisorAssignments";
 
 type ViewAssignmentsProps = {
   isSupervisor: boolean;
@@ -38,6 +42,8 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
     useDisclosure(false);
   const [displayedAssignment, setDisplayedAssignment] = useState(0);
   const deleteAssignment = useDeleteAssignment();
+  const [isEdit, setIsEdit] = useState(false);
+  const [editedAssignmentId, setEditedAssignment] = useState(-1);
 
   const [page, setPage] = useState(1);
   const { data: newData } = useFetchAssignmentsForCoordinator({
@@ -45,12 +51,46 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
     page: page,
   });
 
+  const { data: assignments } =
+    useFetchStudentAdvisorAssignment(displayedAssignment);
   const { mutate: approveAssignment } = useAssignmentAction();
-  const navigate = useNavigate();
 
-  const handleEdit = (assignmentId: number) => {
-    navigate(`/assignment/make`, {});
-  };
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log("from view Assignments effect test!");
+    const handleEdit = () => {
+      const editedAssignment = newData?.payload?.find(
+        (assignment) => assignment.assignmentId === editedAssignmentId,
+      );
+      const state: EditAssignmentProps = {
+        edit: true,
+        record: {
+          assignments:
+            assignments?.map((assignment) => ({
+              assignmentNum: assignment.assignmentId,
+              studentId: assignment.studentEmail.split("@")[0],
+              advisorId: assignment.advisorEmail.split("@")[0],
+            })) || [],
+          department: editedAssignment?.department || "",
+          studentsNumber: assignments?.length.toString() || "",
+          batchYear: editedAssignment?.year.toString() || "",
+          assignmentId: editedAssignmentId,
+        },
+      };
+      navigate(`/assignment/`, {
+        state,
+      });
+    };
+    if (isEdit && (assignments?.length || 0) > 0 && editedAssignmentId !== -1)
+      handleEdit();
+  }, [
+    displayedAssignment,
+    assignments,
+    navigate,
+    isEdit,
+    editedAssignmentId,
+    newData?.payload,
+  ]);
 
   const handleApprove = (assignmentId: number) => {
     modals.openConfirmModal({
@@ -92,6 +132,7 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
   return (
     <Container>
       <DataTable
+        idAccessor={(record) => record.assignmentId}
         withTableBorder
         borderRadius="md"
         height={800}
@@ -143,7 +184,11 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
                 {!isSupervisor ? (
                   <>
                     <ActionIcon
-                      onClick={openEditModal}
+                      onClick={() => {
+                        setIsEdit(true);
+                        setEditedAssignment(record.assignmentId);
+                        setDisplayedAssignment(record.assignmentId);
+                      }}
                       size="sm"
                       variant="subtle"
                       color="blue"
@@ -197,7 +242,7 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
         withCloseButton={false}
         onClose={close}
       >
-        <DisplayAssignment assignmentId={displayedAssignment} />
+        <DisplayAssignment assignments={assignments || []} />
       </Modal>
       <Modal opened={openEdit} onClose={closeEditModal}>
         <Assignment />

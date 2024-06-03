@@ -2,6 +2,7 @@ import { forwardRef, useContext, useEffect, useState } from "react";
 import {
   IconChevronRight,
   IconExternalLink,
+  IconMessage,
   IconUser,
 } from "@tabler/icons-react";
 import {
@@ -21,6 +22,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Profile } from "../pages/Profile/Profile";
 import { logout } from "../data/auth";
 import { useQueryClient } from "@tanstack/react-query";
+import { MessageAdvisor } from "../pages/Messages/MessageAdvisor";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   name: string;
@@ -35,6 +37,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
       style={{
         color: "var(--mantine-color-text)",
         borderRadius: "var(--mantine-radius-sm)",
+        marginLeft: "auto",
       }}
       {...others}
     >
@@ -65,7 +68,9 @@ type UserProps = {
 export function User({ email, name, role }: UserProps) {
   const user = useUserContext();
   const [opened, { open, close }] = useDisclosure(false);
+  const messageDislosure = useDisclosure(false);
   const queryClient = useQueryClient();
+  console.log(role, "role from user");
 
   if (!user)
     return (
@@ -77,7 +82,13 @@ export function User({ email, name, role }: UserProps) {
     );
   return (
     <>
-      <Menu withArrow>
+      <Menu
+        keepMounted={true}
+        withinPortal={true}
+        closeOnEscape={false}
+        closeOnClickOutside={false}
+        withArrow
+      >
         <Menu.Target>
           <UserButton name={name} email={email} />
         </Menu.Target>
@@ -95,6 +106,12 @@ export function User({ email, name, role }: UserProps) {
             </Menu.Item>
           )}
 
+          {(role === 1 || role === 0) && (
+            <MessageAdvisor
+              messageDisclosure={messageDislosure}
+              isAdvisor={role === 1}
+            />
+          )}
           <Menu.Item
             onClick={() => {
               modals.openConfirmModal({

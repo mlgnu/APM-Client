@@ -11,7 +11,9 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { IconEdit } from "@tabler/icons-react";
 import { useSubmitFeedback } from "../../hooks/Feedback/useSubmitFeedback";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useForm } from "@mantine/form";
+import { useFetchFeedback } from "../../hooks/Feedback/useFetchFeedback";
 
 type MakeFeedbackProps = {
   isEdit: boolean;
@@ -28,15 +30,39 @@ export const MakeFeedback = ({
   sessionId,
   isAdvisor,
 }: MakeFeedbackProps) => {
-  const [quantitativeFeedback, setQuantitativeFeedback] = useState(0);
-  const [qualitativeFeedback, setQualitativeFeedback] = useState("");
+  const { data: feedback } = useFetchFeedback({
+    sessionId,
+    enabled: isEdit,
+  });
   const { mutate: submitFeedback } = useSubmitFeedback();
+
+  const form = useForm({
+    initialValues: {
+      quantitativeFeedback: 0,
+      qualitativeFeedback: "",
+    },
+    validate: {
+      quantitativeFeedback: (value) =>
+        value > 0 && value <= 10 ? null : "Value should be between 1 and 10",
+      qualitativeFeedback: (value) =>
+        value.length > 0 ? null : "Feedback should not be empty",
+    },
+  });
+
+  useEffect(() => {
+    if (feedback) {
+      form.setValues({
+        quantitativeFeedback: feedback.rating,
+        qualitativeFeedback: feedback.feedback,
+      });
+    }
+  }, [feedback, form]);
 
   const handleSubmitFeedback = () => {
     submitFeedback({
       sessionId: sessionId,
-      feedback: qualitativeFeedback,
-      rating: quantitativeFeedback,
+      feedback: form.values.qualitativeFeedback,
+      rating: form.values.quantitativeFeedback,
     });
     close();
   };
@@ -49,8 +75,7 @@ export const MakeFeedback = ({
       </Text>
       <Space h="md"></Space>
       <Slider
-        value={quantitativeFeedback}
-        onChange={(value) => setQuantitativeFeedback(value)}
+        {...form.getInputProps("quantitativeFeedback")}
         styles={{
           label: {
             zIndex: 1000,
@@ -59,10 +84,17 @@ export const MakeFeedback = ({
         max={10}
         step={0.5}
       />
+      {form.errors.quantitativeFeedback && (
+        <>
+          <Space h="xs"></Space>
+          <Text c="red" size="xs">
+            {form.errors.quantitativeFeedback}
+          </Text>
+        </>
+      )}
       <Space h="md"></Space>
       <Textarea
-        value={qualitativeFeedback}
-        onChange={(e) => setQualitativeFeedback(e.target.value)}
+        {...form.getInputProps("qualitativeFeedback")}
         placeholder="Write feedback"
         label="Qualitative Feedback"
       ></Textarea>
@@ -79,6 +111,9 @@ export const MakeFeedback = ({
         </Button>
         <Button
           onClick={() => {
+            form.validate();
+            console.log(form.errors, "errors");
+            if (!form.isValid()) return;
             toggleEdit(false);
             handleSubmitFeedback();
             close();

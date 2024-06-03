@@ -10,7 +10,6 @@ import SubScript from "@tiptap/extension-subscript";
 import { Button, Modal } from "@mantine/core";
 import { editAnnouncement, makeAnnouncement } from "../../data/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
 import { useEffect } from "react";
@@ -78,12 +77,18 @@ export function AnnouncementsEditor(props: any) {
   });
 
   const focus = useEffect(() => {
-    editorExtensions?.chain().focus();
-  }, []);
+    editorExtensions?.chain().focus().run();
+  }, [editorExtensions]);
 
   return (
     <>
-      <RichTextEditor editor={editorExtensions}>
+      <RichTextEditor
+        style={{
+          minHeight: "500px",
+        }}
+        editor={editorExtensions}
+        autoFocus
+      >
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />

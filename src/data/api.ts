@@ -1,7 +1,8 @@
 import axios from "axios";
-import { MakeAssignmentType } from "../pages/Assignments/Assignment";
+import { AssignmentType } from "../pages/Assignments/Assignment";
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = import.meta.env.VITE_API_URL;
+console.log(API_URL, "API_URL");
 
 export async function makeAnnouncement(announcement: string) {
   return await axios.post(`${API_URL}/announcements/make`, { announcement });
@@ -25,6 +26,6 @@ export async function editAnnouncement(params: {
   });
 }
 
-export async function makeAssignment(assignment: MakeAssignmentType) {
+export async function makeAssignment(assignment: AssignmentType) {
   return await axios.post(`${API_URL}/assignments/assign`, { assignment });
 }

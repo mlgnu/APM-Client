@@ -3,7 +3,6 @@ import apiClient from "../utils/apiClient";
 import { AssignmentType } from "../pages/Assignments/Assignment";
 
 export type Assignments = {
-  coordinatorId: string;
   department: string;
   studentsNumber: string;
   batchYear: string;

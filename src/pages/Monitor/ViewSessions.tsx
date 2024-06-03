@@ -1,10 +1,18 @@
 import { DataTable } from "mantine-datatable";
 import { useFetchSessions } from "../../hooks/useFetchSessions";
-import { ActionIcon, Box, Container, Group, Slider } from "@mantine/core";
+import {
+  ActionIcon,
+  Anchor,
+  Box,
+  Container,
+  Group,
+  Slider,
+} from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { AssignmentStatus } from "../Assignments/AssignmentStatus";
 import {
   IconEdit,
+  IconExternalLink,
   IconEye,
   IconTimeline,
   IconTrash,
@@ -15,6 +23,8 @@ import { useDeleteSession } from "../../hooks/useDeleteSession";
 import { ViewFeedback } from "../MonitorFeebBack/ViewFeedback";
 import { MakeFeedback } from "../MonitorFeebBack/MakeFeedback";
 import { ManageFeedback } from "../MonitorFeebBack/ManageFeedback";
+import { useNavigate } from "react-router-dom";
+import { EditSessionParams } from "./ManageSession";
 
 type viewSessionsProps = {
   isAdvisor: boolean;
@@ -41,6 +51,24 @@ export const ViewSessions = ({ isAdvisor }: viewSessionsProps) => {
       labels: { cancel: "No", confirm: "Yes" },
       onConfirm: () => deleteSession(id),
     });
+  };
+
+  const navigate = useNavigate();
+  const handleEdit = (sessionId: number) => {
+    const session = sessions?.payload.find(
+      (session) => session.sessionId === sessionId,
+    );
+    const state: EditSessionParams = {
+      edit: true,
+      sessionId: sessionId,
+      student: session?.studentId || 0,
+      mode: session?.isOnline ? "Online" : "Physical",
+      venue: session?.venue || "",
+      date: session?.date || "",
+      timeStart: session?.startTime || "",
+      timeEnd: session?.endTime || "",
+    };
+    navigate(`/sessions/manage`, { state });
   };
 
   const formatDate = (date: string) => {
@@ -75,11 +103,22 @@ export const ViewSessions = ({ isAdvisor }: viewSessionsProps) => {
           {
             accessor: "isOnline",
             title: "Venue/Link",
-            render: (record) => (record.isOnline ? "Google Meet" : "ddd"),
+            width: 200,
+            render: (record) =>
+              record.isOnline ? (
+                <>
+                  Google Meet{" "}
+                  <Anchor href={record.venue} target="_blank">
+                    <IconExternalLink size={16} />
+                  </Anchor>
+                </>
+              ) : (
+                <>{record.venue}</>
+              ),
           },
           {
             accessor: "date",
-            title: "date",
+            title: "Date",
             render: (record) => formatDate(record.date),
           },
           {
@@ -92,28 +131,34 @@ export const ViewSessions = ({ isAdvisor }: viewSessionsProps) => {
             accessor: "actions",
             title: <Box mr={6}>Actions</Box>,
             textAlign: "right",
-            width: isAdvisor ? 80 : 0,
-            render: (record) =>
-              isAdvisor && (
-                <Group gap={4} justify="right" wrap="nowrap">
-                  <ManageFeedback
-                    isAdvisor={isAdvisor}
-                    sessionId={record.sessionId}
+            render: (record) => (
+              <Group gap={4} justify="right" wrap="nowrap">
+                <ActionIcon size="sm" variant="subtle" color="blue">
+                  <IconEdit
+                    onClick={() => handleEdit(record.sessionId)}
+                    size={16}
                   />
+                </ActionIcon>
+                <ManageFeedback
+                  isAdvisor={isAdvisor}
+                  sessionId={record.sessionId}
+                />
+                {isAdvisor && (
                   <ActionIcon size="sm" variant="subtle" color="red">
                     <IconTrash
                       onClick={() => handleDelete(record.eventId)}
                       size={16}
                     />
                   </ActionIcon>
-                </Group>
-              ),
+                )}
+              </Group>
+            ),
           },
         ]}
         records={sessions?.payload}
         page={page}
         onPageChange={(p) => setPage(p)}
-        totalRecords={sessions?.pages * pageSize}
+        totalRecords={(sessions?.pages || 0) * pageSize}
         recordsPerPage={pageSize}
         recordsPerPageOptions={[2, 10, 15, 20, 25, 30]}
         onRecordsPerPageChange={(p) => setPageSize(p)}

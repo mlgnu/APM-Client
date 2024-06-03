@@ -141,7 +141,7 @@ export const ViewActivities = ({
         records={activities?.payload}
         page={page}
         onPageChange={(p) => setPage(p)}
-        totalRecords={activities?.pages * pageSize}
+        totalRecords={(activities?.pages || 0) * pageSize}
         recordsPerPage={pageSize}
         recordsPerPageOptions={[2, 10, 15, 20, 25, 30]}
         onRecordsPerPageChange={(p) => setPageSize(p)}

@@ -1,8 +1,12 @@
 // api.js
-import axios from 'axios';
-import { UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from "axios";
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
-const apiUrl = 'your_api_endpoint';
+const apiUrl = "your_api_endpoint";
 
 export const useMakeAnnouncement = () => {
   const queryClient = useQueryClient();
@@ -12,11 +16,10 @@ export const useMakeAnnouncement = () => {
     return response.data;
   };
 
-  return useMutation(postData, {
-    onSuccess: () => {
-      // Invalidate and refetch the data query after a successful post
-      //queryClient.invalidateQueries('');
-    },
-  });
+  // return useMutation(postData, {
+  //   onSuccess: () => {
+  //     // Invalidate and refetch the data query after a successful post
+  //     //queryClient.invalidateQueries('');
+  //   },
+  // });
 };
-
