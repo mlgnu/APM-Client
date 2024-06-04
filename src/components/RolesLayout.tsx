@@ -3,8 +3,10 @@ import {
   IconActivity,
   IconBell,
   IconCalendarClock,
+  IconCalendarTime,
   IconExchange,
   IconEye,
+  IconLayout,
   IconProgress,
   IconUser,
 } from "@tabler/icons-react";
@@ -31,11 +33,15 @@ export const RolesLayout = () => {
     ],
     [
       { icon: IconBell, path: "/", label: "Announcements" },
-      { icon: IconBell, path: "/sessions/manage", label: "Schedule Session" },
+      {
+        icon: IconCalendarTime,
+        path: "/sessions/manage",
+        label: "Schedule Session",
+      },
       { icon: IconBell, path: "/sessions/view", label: "View Sessions" },
-      { icon: IconBell, path: "/dashbaord", label: "Feedback Dashboard" },
-      { icon: IconBell, path: "/activity/make", label: "Propose Activity" },
-      { icon: IconBell, path: "/activity/view", label: "View Activities" },
+      { icon: IconLayout, path: "/dashbaord", label: "Feedback Dashboard" },
+      { icon: IconActivity, path: "/activity/make", label: "Propose Activity" },
+      { icon: IconEye, path: "/activity/view", label: "View Activities" },
     ],
     [
       { icon: IconBell, path: "/", label: "Announcements" },
@@ -44,8 +50,12 @@ export const RolesLayout = () => {
       { icon: IconActivity, path: "/activity/view", label: "View Activities" },
     ],
     [
-      { icon: IconBell, path: "/assignments/view", label: "View Assignments" },
-      { icon: IconBell, path: "/assdashboard", label: "Dashboard" },
+      {
+        icon: IconExchange,
+        path: "/assignments/view",
+        label: "View Assignments",
+      },
+      { icon: IconLayout, path: "/assdashboard", label: "Dashboard" },
     ],
   ];
 
