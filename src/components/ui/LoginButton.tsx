@@ -1,5 +1,4 @@
 import { Button } from "@mantine/core";
-import axios from "axios"; // Make sure to install axios: npm install axios
 
 const LoginButton = () => {
   const handleLogin = async () => {

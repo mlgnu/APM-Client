@@ -12,7 +12,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconAdjustments } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { EditorContext } from "../../context/EditorContext";
 import { Announcement } from "./Announcement";
@@ -23,6 +23,7 @@ import { ContextModalProps, ModalsProvider, modals } from "@mantine/modals";
 import { UserContext } from "../../utils/UserContext";
 import { useContext, useEffect, useState } from "react";
 import classes from "./style/announcements.module.css";
+import { useLocation } from "react-router-dom";
 
 type AnnouncementsProps = {
   isEditor: boolean;
@@ -50,6 +51,20 @@ export function Announcements({ isEditor }: AnnouncementsProps) {
       description={announcement.announcement}
     />
   ));
+
+  const location = useLocation();
+  const [getToken, setToken] = useLocalStorage({
+    key: "token",
+  });
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    if (token) {
+      setToken(token);
+      console.log(getToken, "token");
+      // localStorage.setItem("token", token);
+    }
+  }, [location.search, setToken, getToken]);
 
   return (
     <>

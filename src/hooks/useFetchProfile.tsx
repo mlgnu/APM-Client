@@ -16,9 +16,16 @@ const fetchProfile = async () => {
   return data;
 };
 
-export const useFetchProfile = () => {
+export const useFetchProfile = ({
+  enabled,
+  token,
+}: {
+  enabled: boolean;
+  token: string;
+}) => {
   return useQuery<Profile, Error, Profile>({
-    queryKey: ["profile"],
+    queryKey: ["profile", token],
     queryFn: fetchProfile,
+    enabled,
   });
 };

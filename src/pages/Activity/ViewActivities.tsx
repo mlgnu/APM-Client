@@ -104,8 +104,10 @@ export const ViewActivities = ({
             render: (record) => (
               <Group gap={4} justify="right" wrap="nowrap">
                 <ActivityStatus
-                  advisorEmail={record.advisorId.user.userEmail}
-                  coordinatorEmail={record.coordinatorId.user.userEmail || ""}
+                  advisorEmail={record?.advisorId?.user?.userEmail}
+                  coordinatorEmail={
+                    record?.coordinatorId?.user?.userEmail || ""
+                  }
                   status={record.status}
                   message={record.message || ""}
                   creationTime={record.createdAt}

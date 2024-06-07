@@ -133,23 +133,25 @@ export const ViewSessions = ({ isAdvisor }: viewSessionsProps) => {
             textAlign: "right",
             render: (record) => (
               <Group gap={4} justify="right" wrap="nowrap">
-                <ActionIcon size="sm" variant="subtle" color="blue">
-                  <IconEdit
-                    onClick={() => handleEdit(record.sessionId)}
-                    size={16}
-                  />
-                </ActionIcon>
                 <ManageFeedback
                   isAdvisor={isAdvisor}
                   sessionId={record.sessionId}
                 />
                 {isAdvisor && (
-                  <ActionIcon size="sm" variant="subtle" color="red">
-                    <IconTrash
-                      onClick={() => handleDelete(record.eventId)}
-                      size={16}
-                    />
-                  </ActionIcon>
+                  <>
+                    <ActionIcon size="sm" variant="subtle" color="blue">
+                      <IconEdit
+                        onClick={() => handleEdit(record.sessionId)}
+                        size={16}
+                      />
+                    </ActionIcon>
+                    <ActionIcon size="sm" variant="subtle" color="red">
+                      <IconTrash
+                        onClick={() => handleDelete(record.eventId)}
+                        size={16}
+                      />
+                    </ActionIcon>
+                  </>
                 )}
               </Group>
             ),

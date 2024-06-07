@@ -23,6 +23,7 @@ import { Profile } from "../pages/Profile/Profile";
 import { logout } from "../data/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { MessageAdvisor } from "../pages/Messages/MessageAdvisor";
+import { useNavigate } from "react-router-dom";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   name: string;
@@ -70,6 +71,7 @@ export function User({ email, name, role }: UserProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const messageDislosure = useDisclosure(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   console.log(role, "role from user");
 
   if (!user)
@@ -129,9 +131,9 @@ export function User({ email, name, role }: UserProps) {
                 confirmProps: { color: "red" },
                 onCancel: () => console.log("Cancel"),
                 onConfirm: () => {
-                  logout();
-                  queryClient.invalidateQueries({ queryKey: ["user"] });
-                  // window.location.href = "/";
+                  localStorage.removeItem("token");
+                  navigate("/");
+                  navigate(0);
                 },
               });
             }}

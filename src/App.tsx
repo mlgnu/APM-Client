@@ -12,6 +12,8 @@ import { useFetchProfile } from "./hooks/useFetchProfile";
 import { ProfileContext } from "./utils/ProfileContext";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorBoundaryModal } from "./components/ErrorBoundaryModal";
+import { useLocalStorage } from "@mantine/hooks";
+import { useEffect } from "react";
 
 const EditorModal = ({
   context,
@@ -28,8 +30,14 @@ const EditorModal = ({
 );
 
 export function App() {
+  const [token] = useLocalStorage({ key: "token" });
+  useEffect(() => {}, [token]);
+
   const { data: user } = useFetchUser();
-  const { data: profile } = useFetchProfile();
+  const { data: profile } = useFetchProfile({
+    enabled: !!token,
+    token: token,
+  });
   return (
     <ErrorBoundary FallbackComponent={ErrorBoundaryModal}>
       <ProfileContext.Provider value={profile}>
