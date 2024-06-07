@@ -13,6 +13,7 @@ import FeedbackDashboard from "../pages/MonitorFeebBack/FeedbackDashboard";
 import { ProposeActivity } from "../pages/Activity/ProposeActivity";
 import { ViewActivities } from "../pages/Activity/ViewActivities";
 import { NotFound } from "../pages/NotFound";
+import { useLocalStorage } from "@mantine/hooks";
 
 const routesConfig = [
   [
@@ -69,6 +70,22 @@ export const RoleRoutes = () => {
   const role = user ? user.role : 4;
   console.log(role, "roles routes role");
   const selectedRoutes = routesConfig[role];
+  const [token] = useLocalStorage({ key: "token" });
+  if (token && role === 4) {
+    return (
+      <Routes>
+        <Route path="/" element={<CollapsedAppShell />}>
+          {selectedRoutes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+        </Route>
+      </Routes>
+    );
+  }
+
+  if (!token) {
+    return;
+  }
 
   return (
     <Routes>
