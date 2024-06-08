@@ -14,11 +14,12 @@ import {
   rem,
   Modal,
   LoadingOverlay,
+  Portal,
 } from "@mantine/core";
 import { IconTrash, IconLogout, IconUserCircle } from "@tabler/icons-react";
 import { UserContext, useUserContext } from "../utils/UserContext";
 import { modals } from "@mantine/modals";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { Profile } from "../pages/Profile/Profile";
 import { logout } from "../data/auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -72,6 +73,8 @@ export function User({ email, name, role }: UserProps) {
   const messageDislosure = useDisclosure(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width: 50em)");
+
   console.log(role, "role from user");
 
   if (!user)
@@ -126,7 +129,7 @@ export function User({ email, name, role }: UserProps) {
                 ),
                 labels: {
                   confirm: "Logout",
-                  cancel: "Stay logged in, I've changed my mind",
+                  cancel: "Stay logged in",
                 },
                 confirmProps: { color: "red" },
                 onCancel: () => console.log("Cancel"),
@@ -137,8 +140,6 @@ export function User({ email, name, role }: UserProps) {
                 },
               });
             }}
-            // component="a"
-            // href="http://localhost:3001/api/auth/google/logout"
             color="red"
             leftSection={
               <IconLogout style={{ width: rem(14), height: rem(14) }} />
@@ -149,13 +150,7 @@ export function User({ email, name, role }: UserProps) {
         </Menu.Dropdown>
       </Menu>
 
-      <Modal
-        size="auto"
-        centered
-        opened={opened}
-        onClose={close}
-        withCloseButton={false}
-      >
+      <Modal centered opened={opened} onClose={close} withCloseButton={false}>
         <Profile role={role} close={close} />
       </Modal>
     </>

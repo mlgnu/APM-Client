@@ -1,12 +1,19 @@
 import { useForm } from "@mantine/form";
-import { NumberInput, TextInput, Button, Box, Select } from "@mantine/core";
+import {
+  NumberInput,
+  TextInput,
+  Button,
+  Box,
+  Select,
+  Space,
+} from "@mantine/core";
 import { UserContext, useUserContext } from "../../utils/UserContext";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { notifications } from "@mantine/notifications";
 import { useQueryClient } from "@tanstack/react-query";
 import { useProfileContext } from "../../utils/ProfileContext";
 import apiClient from "../../utils/apiClient";
+import { useMediaQuery } from "@mantine/hooks";
 
 type ProfileProps = {
   role: number;
@@ -16,15 +23,9 @@ type ProfileProps = {
 export function Profile({ role, close }: ProfileProps) {
   const user = useUserContext();
   const profile = useProfileContext();
-  // const userFirstName: string = user.firstName;
-  // const userLastName: string = user?.data?.lastName;
   const queryClient = useQueryClient();
+  const isMobile = useMediaQuery("(max-width: 50em)");
 
-  // useEffect(() => {
-  //   props.setActiveIndex(props.activeIndex);
-  // }, []);
-
-  //console.log(props);
   console.log(profile, "profile");
   const form = useForm({
     initialValues: {
@@ -69,15 +70,6 @@ export function Profile({ role, close }: ProfileProps) {
     });
   }
 
-  // useEffect(() => {
-  //   form.setValues({
-  //     firstName: profile?.firstName || "",
-  //     email: userEmail,
-  //     department: userDepartment,
-  //     lastName: userLastName,
-  //   });
-  // }, [user]);
-
   return (
     <Box>
       <form
@@ -90,7 +82,8 @@ export function Profile({ role, close }: ProfileProps) {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            maxWidth: "500px",
+            flexDirection: isMobile ? "column" : "row",
+            width: "100%",
           }}
         >
           <Box>
@@ -99,12 +92,15 @@ export function Profile({ role, close }: ProfileProps) {
               placeholder="Name"
               {...form.getInputProps("firstName")}
             />
+
+            {isMobile && <Space h="md" />}
             <TextInput
               label="Last Name"
               placeholder="Name"
               {...form.getInputProps("lastName")}
             />
           </Box>
+          {isMobile && <Space h="md" />}
 
           <Box>
             <TextInput
@@ -113,9 +109,12 @@ export function Profile({ role, close }: ProfileProps) {
               placeholder="Email"
               {...form.getInputProps("email")}
             />
+            {isMobile && <Space h="md" />}
+
             <Select
               label="Department"
               placeholder="Pick value"
+              comboboxProps={{ withinPortal: false }}
               data={[
                 "Computer System and Network",
                 "Artificial Intelligence",
@@ -127,8 +126,10 @@ export function Profile({ role, close }: ProfileProps) {
               {...form.getInputProps("department")}
             />
           </Box>
+
+          {isMobile && <Space h="md" />}
         </Box>
-        <Button type="submit" mt="md" style={{ width: "500px" }}>
+        <Button type="submit" mt="md" style={{ width: "100%" }}>
           Update
         </Button>
       </form>
