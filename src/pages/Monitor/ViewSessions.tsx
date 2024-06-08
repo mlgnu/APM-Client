@@ -103,7 +103,6 @@ export const ViewSessions = ({ isAdvisor }: viewSessionsProps) => {
           {
             accessor: "isOnline",
             title: "Venue/Link",
-            width: 200,
             render: (record) =>
               record.isOnline ? (
                 <>
@@ -119,6 +118,7 @@ export const ViewSessions = ({ isAdvisor }: viewSessionsProps) => {
           {
             accessor: "date",
             title: "Date",
+            width: "auto",
             render: (record) => formatDate(record.date),
           },
           {

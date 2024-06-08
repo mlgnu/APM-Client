@@ -17,7 +17,6 @@ export const MessageCard = ({ message, isSender }: MessageCardProps) => {
         backgroundColor: isSender ? "" : "#2196F3",
         allignItems: "flex-end",
         marginLeft: isSender ? "" : "auto",
-        marginRight: isSender ? "" : "50px",
         marginBottom: 7,
       }}
     >

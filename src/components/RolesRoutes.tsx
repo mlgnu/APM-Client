@@ -83,9 +83,9 @@ export const RoleRoutes = () => {
     );
   }
 
-  if (!token) {
-    return;
-  }
+  // if (!token) {
+  //   return;
+  // }
 
   return (
     <Routes>

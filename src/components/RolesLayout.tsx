@@ -15,7 +15,11 @@ import { Link, NavLink, Outlet, Routes } from "react-router-dom";
 import { UserContext, useUserContext } from "../utils/UserContext";
 import cx from "clsx";
 
-export const RolesLayout = () => {
+type RolesLayoutProps = {
+  closeMobile: () => void;
+};
+
+export const RolesLayout = ({ closeMobile }: RolesLayoutProps) => {
   const user = useUserContext();
   // const user = useContext(UserContext);
   const role = user.role;
@@ -65,6 +69,7 @@ export const RolesLayout = () => {
       key={item.label}
       leftSection={<item.icon size="1rem" stroke={1.5} />}
       label={item.label}
+      onClick={closeMobile}
       renderRoot={({ className, ...others }) => (
         <NavLink
           to={item.path}

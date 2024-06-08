@@ -11,8 +11,9 @@ import {
   Menu,
   rem,
   Portal,
+  CloseButton,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { IconInfoCircle, IconMessage, IconSend2 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { MessageList } from "./MessageList";
@@ -37,6 +38,7 @@ export const MessageAdvisor = ({
   const [burgerOpened, { toggle: burgerToggle }] = useDisclosure(true);
   const { mutate: sendMessageMutate } = useSendMessage(chatId);
   const [fetchInterval, setFetchInterval] = useState(1000);
+  const isMobile = useMediaQuery("(max-width: 50em)");
 
   const chat = useFetchChat(fetchInterval, isAdvisor, chatId);
   useEffect(() => {
@@ -97,6 +99,7 @@ export const MessageAdvisor = ({
       </Menu.Item>
       <Portal>
         <Modal
+          fullScreen={isMobile}
           withinPortal={true}
           opened={opened}
           withCloseButton={false}
@@ -118,6 +121,11 @@ export const MessageAdvisor = ({
             <>
               <Modal.Header>
                 <Burger opened={burgerOpened} onClick={burgerToggle} />
+                <CloseButton
+                  onClick={close}
+                  style={{ marginLeft: 10 }}
+                  size="lg"
+                />
               </Modal.Header>
               <Box
                 style={{
@@ -139,7 +147,7 @@ export const MessageAdvisor = ({
                     viewportRef={scrollAreaRef}
                     offsetScrollbars
                     scrollHideDelay={500}
-                    h={700}
+                    h={isMobile ? "calc(100vh - 130px)" : "calc(100vh - 200px)"}
                   >
                     {messages}
                   </ScrollArea>

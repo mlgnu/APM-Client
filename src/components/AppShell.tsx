@@ -22,7 +22,8 @@ import { ToggleColorScheme } from "./ToggleColorScheme";
 import { capitalize } from "lodash";
 
 export function CollapsedAppShell() {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] =
+    useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
   // const user = useUserContext();
   // const profile = useProfileContext();
@@ -78,7 +79,13 @@ export function CollapsedAppShell() {
           <ToggleColorScheme />
         </Group>
       </AppShell.Header>
-      {user ? <AppShell.Navbar p="md">{<RolesLayout />}</AppShell.Navbar> : ""}
+      {user ? (
+        <AppShell.Navbar p="md">
+          {<RolesLayout closeMobile={toggleMobile} />}
+        </AppShell.Navbar>
+      ) : (
+        ""
+      )}
       <AppShell.Main>
         <Outlet />
       </AppShell.Main>
