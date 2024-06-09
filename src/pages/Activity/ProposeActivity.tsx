@@ -24,6 +24,7 @@ import Highlight from "@tiptap/extension-highlight";
 import { useMakeActivity } from "../../hooks/Activity/useMakeActivity";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEditActivity } from "../../hooks/Activity/useEditActivity";
+import { useMediaQuery } from "@mantine/hooks";
 
 type ProposeActivityForm = {
   student: string;
@@ -122,16 +123,23 @@ export const ProposeActivity = (props: {}) => {
     injectCSS: true,
     content: form.values.content,
   });
+
   editorExtensions?.on("blur", () => {
     console.log("blur");
     form.setFieldValue("content", editorExtensions.getHTML());
     form.validate();
   });
   console.log(form.values, "form values");
+  const isMobile = useMediaQuery("(max-width: 50em)");
+
   return (
     <>
       <Container>
-        <Stepper active={active} onStepClick={setActive}>
+        <Stepper
+          size={isMobile ? "sm" : "md"}
+          active={active}
+          onStepClick={setActive}
+        >
           <Stepper.Step label="First step" description="Activity information">
             <Select
               label="Student"

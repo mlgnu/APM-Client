@@ -62,6 +62,7 @@ export const ActivityAction = ({ activityId }: ActivityActionProps) => {
       </ActionIcon>
       <Modal withCloseButton={false} size="sm" opened={opened} onClose={close}>
         <Select
+          comboboxProps={{ withinPortal: false }}
           data={[
             { value: "-1", label: "Reject" },
             { value: "1", label: "Approve" },

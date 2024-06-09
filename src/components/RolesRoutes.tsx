@@ -14,6 +14,7 @@ import { ProposeActivity } from "../pages/Activity/ProposeActivity";
 import { ViewActivities } from "../pages/Activity/ViewActivities";
 import { NotFound } from "../pages/NotFound";
 import { useLocalStorage } from "@mantine/hooks";
+import { ManageAnnouncement } from "../pages/Announcements/ManageAnnouncement";
 
 const routesConfig = [
   [
@@ -49,6 +50,7 @@ const routesConfig = [
       element: <ViewActivities isAdvisor={false} isCoordinator={true} />,
     },
     { path: "*", element: <NotFound /> },
+    { path: "/announcement/manage", element: <ManageAnnouncement /> },
   ],
   [
     { path: "/", element: <Announcements isEditor={false} /> },

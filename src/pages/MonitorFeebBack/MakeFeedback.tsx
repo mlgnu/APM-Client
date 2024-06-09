@@ -38,8 +38,8 @@ export const MakeFeedback = ({
 
   const form = useForm({
     initialValues: {
-      quantitativeFeedback: 0,
-      qualitativeFeedback: "",
+      quantitativeFeedback: feedback?.rating || 0,
+      qualitativeFeedback: feedback?.feedback || "",
     },
     validate: {
       quantitativeFeedback: (value) =>
@@ -48,15 +48,6 @@ export const MakeFeedback = ({
         value.length > 0 ? null : "Feedback should not be empty",
     },
   });
-
-  useEffect(() => {
-    if (feedback) {
-      form.setValues({
-        quantitativeFeedback: feedback.rating,
-        qualitativeFeedback: feedback.feedback,
-      });
-    }
-  }, [feedback, form]);
 
   const handleSubmitFeedback = () => {
     submitFeedback({

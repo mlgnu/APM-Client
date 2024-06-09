@@ -87,13 +87,7 @@ export function User({ email, name, role }: UserProps) {
     );
   return (
     <>
-      <Menu
-        keepMounted={true}
-        withinPortal={true}
-        closeOnEscape={false}
-        closeOnClickOutside={false}
-        withArrow
-      >
+      <Menu keepMounted={true} withinPortal={true} withArrow>
         <Menu.Target>
           <UserButton name={name} email={email} />
         </Menu.Target>

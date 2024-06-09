@@ -2,6 +2,7 @@ import { NavLink as MantineNav, Button } from "@mantine/core";
 import {
   IconActivity,
   IconBell,
+  IconBroadcast,
   IconCalendarClock,
   IconCalendarTime,
   IconExchange,
@@ -49,6 +50,11 @@ export const RolesLayout = ({ closeMobile }: RolesLayoutProps) => {
     ],
     [
       { icon: IconBell, path: "/", label: "Announcements" },
+      {
+        icon: IconBroadcast,
+        path: "/announcement/manage",
+        label: "Manage Announcements",
+      },
       { icon: IconExchange, path: "/assignment", label: "Make Assignment" },
       { icon: IconEye, path: "/assignments/view", label: "View Assignments" },
       { icon: IconActivity, path: "/activity/view", label: "View Activities" },

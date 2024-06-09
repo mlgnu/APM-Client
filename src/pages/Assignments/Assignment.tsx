@@ -5,12 +5,14 @@ import {
   Button,
   Center,
   Container,
+  Fieldset,
   Input,
   Modal,
   ScrollAreaAutosize,
   Space,
   Stepper,
   Table,
+  Text,
   TextInput,
 } from "@mantine/core";
 import { AssignmentDetails } from "./AssignmentDetails";
@@ -20,7 +22,7 @@ import { notifications } from "@mantine/notifications";
 import { useMakeAssignment } from "../../hooks/useMakeAssignment";
 import classes from "./style/assignment.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useListState } from "@mantine/hooks";
+import { useListState, useMediaQuery } from "@mantine/hooks";
 import { useEditAssignment } from "../../hooks/Assignment/useEditAssignment";
 
 export type AssignmentType = {
@@ -87,46 +89,96 @@ export const Assignment = () => {
     }
   }
 
+  const isMobile = useMediaQuery("(max-width: 50em)");
   const rows = assignments.map((assignment, idx) => (
     <Table.Tr key={assignment.assignmentNum}>
-      <Table.Td>{assignment.assignmentNum}</Table.Td>
-      <Table.Td>
-        {
-          <TextInput
-            value={assignment.studentId}
-            onChange={(e) => {
-              handlers.setItem(idx, {
-                ...assignment,
-                studentId: e.target.value,
-              });
-            }}
-            required
-            classNames={{ section: classes.section }}
-            rightSection={"@siswa.um.edu.my"}
-            variant="filled"
-          />
-        }
-      </Table.Td>
-      <Table.Td>
-        {
-          <TextInput
-            required
-            value={assignment.advisorId}
-            onChange={(e) => {
-              handlers.setItem(idx, {
-                ...assignment,
-                advisorId: e.target.value,
-              });
-            }}
-            classNames={{ section: classes.section }}
-            rightSection={"@um.edu.my"}
-            variant="filled"
-          />
-        }
-      </Table.Td>
-      <Table.Td>{assignmentDetails.batchYear}</Table.Td>
-      <Table.Td>{assignmentDetails.department}</Table.Td>
+      {!isMobile && (
+        <>
+          <Table.Td>{assignment.assignmentNum}</Table.Td>
+          <Table.Td>
+            {
+              <TextInput
+                value={assignment.studentId}
+                onChange={(e) => {
+                  handlers.setItem(idx, {
+                    ...assignment,
+                    studentId: e.target.value,
+                  });
+                }}
+                required
+                classNames={{ section: classes.section }}
+                rightSection={"@siswa.um.edu.my"}
+                variant="filled"
+              />
+            }
+          </Table.Td>
+          <Table.Td>
+            {
+              <TextInput
+                required
+                value={assignment.advisorId}
+                onChange={(e) => {
+                  handlers.setItem(idx, {
+                    ...assignment,
+                    advisorId: e.target.value,
+                  });
+                }}
+                classNames={{ section: classes.section }}
+                rightSection={"@um.edu.my"}
+                variant="filled"
+              />
+            }
+          </Table.Td>
+          <Table.Td>{assignmentDetails.batchYear}</Table.Td>
+          <Table.Td>{assignmentDetails.department}</Table.Td>
+        </>
+      )}
     </Table.Tr>
+  ));
+
+  const mobileRows = assignments.map((assignment, idx) => (
+    <Fieldset
+      key={assignment.assignmentNum}
+      legend={`Assignment ${idx + 1}`}
+      style={{ marginBottom: "10px" }}
+    >
+      <TextInput
+        label="Student ID"
+        value={assignment.studentId}
+        onChange={(e) => {
+          handlers.setItem(idx, {
+            ...assignment,
+            studentId: e.target.value,
+          });
+        }}
+        required
+        rightSectionWidth="100px"
+        rightSection={
+          <Text size="xs" truncate="end">
+            @siswa.um.edu.my
+          </Text>
+        }
+        variant="filled"
+      />
+      <TextInput
+        required
+        label="Advisor ID"
+        value={assignment.advisorId}
+        onChange={(e) => {
+          handlers.setItem(idx, {
+            ...assignment,
+            advisorId: e.target.value,
+          });
+        }}
+        rightSectionWidth="100px"
+        rightSection={
+          <Text size="xs" truncate="end">
+            @um.edu.my
+          </Text>
+        }
+        variant="filled"
+      />
+    </Fieldset>
   ));
 
   console.log(rows, "rows");
@@ -184,7 +236,11 @@ export const Assignment = () => {
   return (
     <>
       <Container>
-        <Stepper active={active} onStepClick={setActive}>
+        <Stepper
+          size={isMobile ? "xs" : "md"}
+          active={active}
+          onStepClick={setActive}
+        >
           <Stepper.Step label="First step" description="Assignment Details">
             <AssignmentDetails
               assignmentDetails={assignmentDetails}
@@ -197,31 +253,38 @@ export const Assignment = () => {
             label="Second step"
             description={(state?.edit ? "Edit" : "Make") + " Assignment"}
           >
-            <Center>
-              <Box>
-                <Table.ScrollContainer
-                  component={ScrollAreaAutosize}
-                  mah="800"
-                  minWidth={1200}
-                >
-                  <Table>
-                    <Table.Thead>
-                      <Table.Tr>
-                        <Table.Th maw="30px">No.</Table.Th>
-                        <Table.Th>Student Email</Table.Th>
-                        <Table.Th>Advisor Email</Table.Th>
-                        <Table.Th>Year</Table.Th>
-                        <Table.Th>Department</Table.Th>
-                      </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
+            <Box>
+              {isMobile ? (
+                <Box>
+                  {mobileRows}
+                  <Space h="md" />
+                </Box>
+              ) : (
+                <Center>
+                  <Table
+                    w={isMobile ? "auto" : "1200px"}
+                    component={ScrollAreaAutosize}
+                    mah="800"
+                  >
+                    <Table>
+                      <Table.Thead>
+                        <Table.Tr>
+                          <Table.Th maw="30px">No.</Table.Th>
+                          <Table.Th>Student Email</Table.Th>
+                          <Table.Th>Advisor Email</Table.Th>
+                          <Table.Th>Year</Table.Th>
+                          <Table.Th>Department</Table.Th>
+                        </Table.Tr>
+                      </Table.Thead>
+                      <Table.Tbody>{rows}</Table.Tbody>
+                    </Table>
                   </Table>
-                </Table.ScrollContainer>
-                <Button fullWidth maw="1200" onClick={handleMakeAssignment}>
-                  {state?.edit ? "Edit" : "Make"} Assignment
-                </Button>
-              </Box>
-            </Center>
+                </Center>
+              )}
+              <Button fullWidth maw="1200" onClick={handleMakeAssignment}>
+                {state?.edit ? "Edit" : "Make"} Assignment
+              </Button>
+            </Box>
           </Stepper.Step>
         </Stepper>
       </Container>

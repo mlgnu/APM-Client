@@ -12,7 +12,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconAdjustments } from "@tabler/icons-react";
-import { useDisclosure, useLocalStorage } from "@mantine/hooks";
+import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { EditorContext } from "../../context/EditorContext";
 import { Announcement } from "./Announcement";
@@ -32,6 +32,7 @@ type AnnouncementsProps = {
 export function Announcements({ isEditor }: AnnouncementsProps) {
   const user = useContext(UserContext);
   const [page, setPage] = useState(1);
+  const isMobile = useMediaQuery("(max-width: 50em)");
 
   const { data, isLoading } = useQuery({
     queryKey: ["announcements", page],
@@ -44,6 +45,7 @@ export function Announcements({ isEditor }: AnnouncementsProps) {
   console.log(data, "data");
   const announcements = data?.data?.payload?.map((announcement: any) => (
     <Announcement
+      title={announcement.title}
       isEditor={isEditor}
       key={announcement.id}
       id={announcement.id}
@@ -62,7 +64,6 @@ export function Announcements({ isEditor }: AnnouncementsProps) {
     if (token) {
       setToken(token);
       console.log(getToken, "token");
-      // localStorage.setItem("token", token);
     }
   }, [location.search, setToken, getToken]);
 
@@ -73,56 +74,28 @@ export function Announcements({ isEditor }: AnnouncementsProps) {
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
-      <Container size={1200}>
+      <Container
+        size={1200}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: isMobile ? "calc(100vh - 160px)" : "calc(100vh - 200px)",
+        }}
+      >
         <Accordion className={classes.announcements} variant="contained">
           {announcements}
         </Accordion>
       </Container>
       <Pagination
-        style={{ margin: "20px", display: "flex", justifyContent: "center" }}
+        style={{
+          margin: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignSelf: "end",
+        }}
         total={data?.data?.pages}
         onChange={setPage}
       />
-      {isEditor && (
-        <div style={{ position: "relative", minHeight: "100vh" }}>
-          <ActionIcon
-            style={{ position: "fixed", bottom: "20px", right: "20px" }}
-            variant="filled"
-            size="xl"
-            aria-label="Settings"
-            onClick={() => {
-              modals.openContextModal({
-                modal: "editor",
-                title: "Announcements Mangager",
-                size: "100%",
-                innerProps: {
-                  edit: false,
-                  // description: '',
-                  // TODO - Check this code
-                  id: "0",
-                },
-              });
-            }}
-          >
-            <IconAdjustments
-              onClick={openEditor}
-              style={{
-                width: "70%",
-                height: "70%",
-              }}
-              stroke={1.5}
-            />
-          </ActionIcon>
-        </div>
-      )}
-      <Modal
-        opened={openedEditor}
-        onClose={closeEditor}
-        title="Announcements Manager"
-        size="100%"
-      >
-        <AnnouncementsEditor closeModal={closeEditor} />
-      </Modal>
     </>
   );
 }

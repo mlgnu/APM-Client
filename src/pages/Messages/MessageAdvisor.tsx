@@ -35,10 +35,10 @@ export const MessageAdvisor = ({
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<JSX.Element[]>([]);
-  const [burgerOpened, { toggle: burgerToggle }] = useDisclosure(true);
   const { mutate: sendMessageMutate } = useSendMessage(chatId);
   const [fetchInterval, setFetchInterval] = useState(1000);
   const isMobile = useMediaQuery("(max-width: 50em)");
+  const [burgerOpened, { toggle: burgerToggle }] = useDisclosure(false);
 
   const chat = useFetchChat(fetchInterval, isAdvisor, chatId);
   useEffect(() => {
@@ -66,6 +66,11 @@ export const MessageAdvisor = ({
   useEffect(() => {
     if (opened) {
       setFetchInterval(1000);
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTo({
+          top: scrollAreaRef.current.scrollHeight,
+        });
+      }
 
       return () => {
         setFetchInterval(0);
@@ -122,6 +127,7 @@ export const MessageAdvisor = ({
               <Modal.Header>
                 <Burger opened={burgerOpened} onClick={burgerToggle} />
                 <CloseButton
+                  hiddenFrom="md"
                   onClick={close}
                   style={{ marginLeft: 10 }}
                   size="lg"
@@ -147,7 +153,7 @@ export const MessageAdvisor = ({
                     viewportRef={scrollAreaRef}
                     offsetScrollbars
                     scrollHideDelay={500}
-                    h={isMobile ? "calc(100vh - 130px)" : "calc(100vh - 200px)"}
+                    h={isMobile ? "calc(100vh - 130px)" : "calc(100vh - 230px)"}
                   >
                     {messages}
                   </ScrollArea>

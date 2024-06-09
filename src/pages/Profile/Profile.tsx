@@ -83,7 +83,7 @@ export function Profile({ role, close }: ProfileProps) {
             display: "flex",
             justifyContent: "space-between",
             flexDirection: isMobile ? "column" : "row",
-            width: "100%",
+            gap: isMobile ? "0rem" : "1rem",
           }}
         >
           <Box>
@@ -92,7 +92,6 @@ export function Profile({ role, close }: ProfileProps) {
               placeholder="Name"
               {...form.getInputProps("firstName")}
             />
-
             {isMobile && <Space h="md" />}
             <TextInput
               label="Last Name"

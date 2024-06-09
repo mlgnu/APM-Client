@@ -17,6 +17,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { AnnouncementsEditor } from "./AnnouncementsEditor";
 import { UserContext } from "../../utils/UserContext";
 import { TypographyStylesProvider } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { EditAnnouncementParams } from "../../hooks/Announcement/useEditAnnouncement";
 
 type AnnouncementProps = {
   isEditor: boolean;
@@ -24,9 +26,11 @@ type AnnouncementProps = {
   id: string;
   date: string;
   description: string;
+  title: string;
 };
 
 export function Announcement({
+  title,
   isEditor,
   key,
   id,
@@ -52,6 +56,17 @@ export function Announcement({
       confirmProps: { color: "red" },
       onConfirm: () => remove(id),
     });
+
+  const navigate = useNavigate();
+  const handleEditAnn = () => {
+    navigate("/announcement/manage", {
+      state: {
+        id: id,
+        title: title,
+        announcement: description,
+      } as EditAnnouncementParams,
+    });
+  };
 
   const { mutate: remove } = useMutation({
     mutationFn: removeAnnouncement,
@@ -102,17 +117,8 @@ export function Announcement({
               radius="xs"
               variant="light"
               onClick={() => {
+                handleEditAnn();
                 setpopOpened(false);
-                modals.openContextModal({
-                  modal: "editor",
-                  title: "Announcements Mangager",
-                  size: "100%",
-                  innerProps: {
-                    edit: true,
-                    description: description,
-                    id: id,
-                  },
-                });
               }}
             >
               Edit
@@ -131,7 +137,14 @@ export function Announcement({
       )}
 
       <Accordion.Control style={{ marginLeft: "100" }}>
-        {date}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Text size="lg" fw={500}>
+            {title}
+          </Text>
+          <Text size="sm" c="dimmed" mr="100px">
+            {date}
+          </Text>
+        </div>
       </Accordion.Control>
       <Accordion.Panel>
         <TypographyStylesProvider>

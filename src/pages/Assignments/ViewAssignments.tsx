@@ -3,11 +3,14 @@ import { DataTable } from "mantine-datatable";
 import {
   ActionIcon,
   Box,
+  Button,
   Container,
   Group,
   Modal,
   ScrollArea,
   ScrollAreaAutosize,
+  Textarea,
+  rem,
 } from "@mantine/core";
 import {
   IconEdit,
@@ -17,7 +20,7 @@ import {
   IconCheck,
   IconXboxX,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Payload,
   useFetchAssignmentsForCoordinator,
@@ -31,6 +34,7 @@ import { Assignment, EditAssignmentProps } from "./Assignment";
 import { useAssignmentAction } from "../../hooks/useAssignmentAction";
 import { useNavigate } from "react-router-dom";
 import { useFetchStudentAdvisorAssignment } from "../../hooks/useFetchStudentAdvisorAssignments";
+import { useForm } from "@mantine/form";
 
 type ViewAssignmentsProps = {
   isSupervisor: boolean;
@@ -104,16 +108,35 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
     });
   };
 
+  const rejectForm = useForm({
+    initialValues: {
+      message: "",
+    },
+    validate: (values) => ({
+      message: values.message.length < 1 ? "Message is required" : null,
+    }),
+  });
+
+  const validateRejectForm = () => {
+    rejectForm.validate();
+    if (rejectForm.isValid()) {
+      approveAssignment({
+        assignmentId: deletedAssignmentId.current,
+        isApprove: false,
+        message: rejectForm.values.message,
+      });
+      return true;
+    }
+    return false;
+  };
+
+  const [rejectOpen, { open: openReject, close: closeReject }] =
+    useDisclosure();
+
+  const deletedAssignmentId = useRef(-1);
   const handleReject = (assignmentId: number) => {
-    modals.openConfirmModal({
-      title: "Reject Assignment",
-      children: "Are you sure you want to reject this assignment?",
-      labels: { confirm: "Yes", cancel: "No" },
-      onConfirm: () => {
-        console.log("Assignment rejected");
-        approveAssignment({ assignmentId, isApprove: false });
-      },
-    });
+    deletedAssignmentId.current = assignmentId;
+    openReject();
   };
 
   const handleDelete = (assignmentId: number) => {
@@ -131,6 +154,25 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
   console.log(newData);
   return (
     <Container>
+      <Modal
+        title="Assignment Reject"
+        opened={rejectOpen}
+        onClose={closeReject}
+      >
+        <Textarea
+          placeholder="Type your rejction message here"
+          {...rejectForm.getInputProps("message")}
+        />
+        <Button
+          w="100%"
+          mt="10px"
+          onClick={() => {
+            if (validateRejectForm()) closeReject();
+          }}
+        >
+          Send
+        </Button>
+      </Modal>
       <DataTable
         idAccessor={(record) => record.assignmentId}
         withTableBorder
@@ -145,7 +187,6 @@ export const ViewAssignments = ({ isSupervisor }: ViewAssignmentsProps) => {
             accessor: "actions",
             title: <Box mr={6}>Actions</Box>,
             textAlign: "right",
-            width: 80,
             render: (record) => (
               <Group gap={4} justify="right" wrap="nowrap">
                 <ActionIcon
