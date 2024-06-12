@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Assignment } from "../pages/Assignments/Assignment";
 import { ViewAssignments } from "../pages/Assignments/ViewAssignments";
@@ -70,32 +70,24 @@ type RoleType = number | null;
 
 export const RoleRoutes = () => {
   const user = useContext(UserContext);
-  const [role, setRole] = useState<RoleType>(null);
-  const [loading, setLoading] = useState(true);
+  let role: RoleType = user ? user.role : 4;
+  console.log(role, "roles routes role");
+  const selectedRoutes = routesConfig[role];
   const [token] = useLocalStorage({ key: "token" });
 
-  useEffect(() => {
-    let userRole: RoleType = user ? user.role : 4;
-    if (token && userRole === 4) {
-      userRole = null;
-    }
-    setRole(userRole);
-    setLoading(false);
-  }, [user, token]);
-
-  if (loading) {
-    return <div>Loading...</div>; // Or any loading spinner/component
+  if (token && role === 4) {
+    role = null;
   }
 
-  const selectedRoutes = routesConfig[role!];
-
   return (
-    <Routes>
-      <Route path="/" element={<CollapsedAppShell />}>
-        {selectedRoutes.map((route, index) => (
-          <Route key={index} path={route.path} element={route.element} />
-        ))}
-      </Route>
-    </Routes>
+    role && (
+      <Routes>
+        <Route path="/" element={<CollapsedAppShell />}>
+          {selectedRoutes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+        </Route>
+      </Routes>
+    )
   );
 };
