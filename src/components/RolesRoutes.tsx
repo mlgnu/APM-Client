@@ -66,15 +66,21 @@ const routesConfig = [
     { path: "*", element: <NotFound /> },
   ],
 ];
+type RoleType = number | null;
 
 export const RoleRoutes = () => {
   const user = useContext(UserContext);
-  const role = user ? user.role : 4;
+  let role: RoleType = user ? user.role : 4;
   console.log(role, "roles routes role");
   const selectedRoutes = routesConfig[role];
   const [token] = useLocalStorage({ key: "token" });
+
   if (token && role === 4) {
-    return (
+    role = null;
+  }
+
+  return (
+    role && (
       <Routes>
         <Route path="/" element={<CollapsedAppShell />}>
           {selectedRoutes.map((route, index) => (
@@ -82,206 +88,6 @@ export const RoleRoutes = () => {
           ))}
         </Route>
       </Routes>
-    );
-  }
-
-  // if (!token) {
-  //   return;
-  // }
-
-  return (
-    <Routes>
-      <Route path="/" element={<CollapsedAppShell />}>
-        {selectedRoutes.map((route, index) => (
-          <Route key={index} path={route.path} element={route.element} />
-        ))}
-      </Route>
-    </Routes>
+    )
   );
 };
-{
-  /* export const StudentRoutes = (props: {}) => { */
-}
-{
-  /*   return ( */
-}
-{
-  /*     <Routes> */
-}
-{
-  /*       <Route path="/" element={<CollapsedAppShell />}> */
-}
-{
-  /*         <Route index element={<Announcements isEditor={false} />} /> */
-}
-{
-  /*         <Route path="message" element={<MessageAdvisor />} /> */
-}
-{
-  /*         <Route path="/monitor" element={<ManageSession />} /> */
-}
-{
-  /*         <Route */
-}
-{
-  /*           path="/sessions/view" */
-}
-{
-  /*           element={<ViewSessions isAdvisor={true} />} */
-}
-{
-  /*         /> */
-}
-{
-  /**/
-}
-{
-  /*         <Route path="*" element={<div>404</div>} /> */
-}
-{
-  /*       </Route> */
-}
-{
-  /*     </Routes> */
-}
-{
-  /*   ); */
-}
-{
-  /* }; */
-}
-{
-  /**/
-}
-{
-  /* export const AdvisorRoutes = (props: {}) => { */
-}
-{
-  /*   return ( */
-}
-{
-  /*     <Routes> */
-}
-{
-  /*       <Route path="/" element={<CollapsedAppShell />}> */
-}
-{
-  /*         <Route path="/assignment" element={<Assignment />} /> */
-}
-{
-  /*         <Route path="message" element={<MessageAdvisor />} /> */
-}
-{
-  /*         <Route path="/monitor" element={<ManageSession />} /> */
-}
-{
-  /*       </Route> */
-}
-{
-  /*     </Routes> */
-}
-{
-  /*   ); */
-}
-{
-  /* }; */
-}
-{
-  /**/
-}
-{
-  /* export const CoordinatorRoutes = (props: {}) => { */
-}
-{
-  /*   return ( */
-}
-{
-  /*     <Routes> */
-}
-{
-  /*       <Route path="/" element={<CollapsedAppShell />}> */
-}
-{
-  /*         <Route path="/assignment" element={<Assignment />} /> */
-}
-{
-  /*         <Route path="/assignments/view" element={<ViewAssignments />} /> */
-}
-{
-  /*       </Route> */
-}
-{
-  /*     </Routes> */
-}
-{
-  /*   ); */
-}
-{
-  /* }; */
-}
-{
-  /**/
-}
-{
-  /* export const SupervisorRoutes = (props: {}) => { */
-}
-{
-  /*   return ( */
-}
-{
-  /*     <Routes> */
-}
-{
-  /*       <Route path="/" element={<CollapsedAppShell />}> */
-}
-{
-  /*         <Route path="/assignments/view" element={<ViewAssignments />} /> */
-}
-{
-  /*       </Route> */
-}
-{
-  /*     </Routes> */
-}
-{
-  /*   ); */
-}
-{
-  /* }; */
-}
-{
-  /**/
-}
-{
-  /* export const RolesRoutes = (props: {}) => { */
-}
-{
-  /*   const user = useContext(UserContext); */
-}
-{
-  /*   return ( */
-}
-{
-  /*     <> */
-}
-{
-  /*       {user?.role === 0 && <StudentRoutes />} */
-}
-{
-  /*       {user?.role === 1 && <AdvisorRoutes />} */
-}
-{
-  /*       {user?.role === 2 && <CoordinatorRoutes />} */
-}
-{
-  /*       {user?.role === 3 && <SupervisorRoutes />} */
-}
-{
-  /*     </> */
-}
-{
-  /*   ); */
-}
-{
-  /* }; */
-}
