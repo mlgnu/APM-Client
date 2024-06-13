@@ -1,10 +1,9 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Assignment } from "../pages/Assignments/Assignment";
 import { ViewAssignments } from "../pages/Assignments/ViewAssignments";
 import { Announcements } from "../pages/Announcements/Announcements";
 import { CollapsedAppShell } from "./AppShell";
-import { MessageAdvisor } from "../pages/Messages/MessageAdvisor";
 import { ManageSession } from "../pages/Monitor/ManageSession";
 import { ViewSessions } from "../pages/Monitor/ViewSessions";
 import { UserContext } from "../utils/UserContext";
@@ -13,7 +12,6 @@ import FeedbackDashboard from "../pages/MonitorFeebBack/FeedbackDashboard";
 import { ProposeActivity } from "../pages/Activity/ProposeActivity";
 import { ViewActivities } from "../pages/Activity/ViewActivities";
 import { NotFound } from "../pages/NotFound";
-import { useLocalStorage } from "@mantine/hooks";
 import { ManageAnnouncement } from "../pages/Announcements/ManageAnnouncement";
 
 const routesConfig = [
@@ -66,23 +64,24 @@ const routesConfig = [
     { path: "*", element: <NotFound /> },
   ],
 ];
-type RoleType = number | null;
 
 export const RoleRoutes = () => {
   const user = useContext(UserContext);
-  const role: RoleType = user ? user.role : 4;
-  console.log(role, "roles routes role");
-  const selectedRoutes = routesConfig[role];
+  const [selectedRoutes, setSelectedRoutes] = useState(routesConfig[4]);
+
+  useEffect(() => {
+    if (user) {
+      setSelectedRoutes(routesConfig[user.role]);
+    }
+  }, [user]);
 
   return (
-    role && (
-      <Routes>
-        <Route path="/" element={<CollapsedAppShell />}>
-          {selectedRoutes.map((route, index) => (
-            <Route key={index} path={route.path} element={route.element} />
-          ))}
-        </Route>
-      </Routes>
-    )
+    <Routes>
+      <Route path="/" element={<CollapsedAppShell />}>
+        {selectedRoutes.map((route, index) => (
+          <Route key={index} path={route.path} element={route.element} />
+        ))}
+      </Route>
+    </Routes>
   );
 };
