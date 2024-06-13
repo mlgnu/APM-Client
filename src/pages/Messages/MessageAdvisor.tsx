@@ -38,7 +38,7 @@ export const MessageAdvisor = ({
   const { mutate: sendMessageMutate } = useSendMessage(chatId);
   const [fetchInterval, setFetchInterval] = useState(1000);
   const isMobile = useMediaQuery("(max-width: 50em)");
-  const [burgerOpened, { toggle: burgerToggle }] = useDisclosure(false);
+  const [burgerOpened, { toggle: burgerToggle }] = useDisclosure(true);
 
   const chat = useFetchChat(fetchInterval, isAdvisor, chatId);
   useEffect(() => {
