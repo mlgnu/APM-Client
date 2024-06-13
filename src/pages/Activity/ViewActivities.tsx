@@ -6,7 +6,7 @@ import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useDeleteActivity } from "../../hooks/Activity/useDeleteActivity";
 import { modals } from "@mantine/modals";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import ViewActivity from "./ViewActivity";
 import { ActivityAction } from "./ActivityAction";
 import { ActivityStatus } from "./ActivityStatus";
@@ -39,6 +39,11 @@ export const ViewActivities = ({
       default:
         return "Pending";
     }
+  };
+
+  const parseToMilitaryTime = (time: string) => {
+    const parsedTime = parse(time, "HH:mm:ss", new Date());
+    return format(parsedTime, "HH:mm");
   };
 
   const navigate = useNavigate();

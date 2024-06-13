@@ -25,6 +25,7 @@ import { useMakeActivity } from "../../hooks/Activity/useMakeActivity";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEditActivity } from "../../hooks/Activity/useEditActivity";
 import { useMediaQuery } from "@mantine/hooks";
+import { format } from "date-fns";
 
 type ProposeActivityForm = {
   student: string;
@@ -97,15 +98,27 @@ export const ProposeActivity = (props: {}) => {
         id: state?.record?.id,
         studentId: parseInt(form.values.student),
         description: form.values.content,
-        startDate: form.values.activityDuration[0] as unknown as Date,
-        endDate: form.values.activityDuration[1] as unknown as Date,
+        startDate: format(
+          form.values.activityDuration[0] as unknown as Date,
+          "yyyy-MM-dd",
+        ) as unknown as Date,
+        endDate: format(
+          form.values.activityDuration[1] as unknown as Date,
+          "yyyy-MM-dd",
+        ) as unknown as Date,
       });
     } else {
       makeActivity({
         studentId: parseInt(form.values.student),
         description: form.values.content,
-        startDate: form.values.activityDuration[0] as unknown as Date,
-        endDate: form.values.activityDuration[1] as unknown as Date,
+        startDate: format(
+          form.values.activityDuration[0] as unknown as Date,
+          "yyyy-MM-dd",
+        ) as unknown as Date,
+        endDate: format(
+          form.values.activityDuration[1] as unknown as Date,
+          "yyyy-MM-dd",
+        ) as unknown as Date,
       });
     }
     navigate("/activity/view");
