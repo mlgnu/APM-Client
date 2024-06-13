@@ -70,14 +70,9 @@ type RoleType = number | null;
 
 export const RoleRoutes = () => {
   const user = useContext(UserContext);
-  let role: RoleType = user ? user.role : 4;
+  const role: RoleType = user ? user.role : 4;
   console.log(role, "roles routes role");
   const selectedRoutes = routesConfig[role];
-  const [token] = useLocalStorage({ key: "token" });
-
-  if (token && role === 4) {
-    role = null;
-  }
 
   return (
     role && (
